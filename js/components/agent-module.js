@@ -127,20 +127,66 @@ class AgentModule {
         const el = document.getElementById('agent-output');
         if (!el) return;
         el.innerHTML = this.outputLines.map((o, idx) => `
-            <div class="output-block">
+            <div class="output-block" id="output-block-${idx}">
                 <div class="output-title">
-                    ${o.title} <span class="output-ts">${o.ts}</span>
+                    <span class="output-title-text">${o.title}</span>
+                    <span class="output-ts">${o.ts}</span>
+                    <button class="output-edit-btn" data-idx="${idx}" title="编辑">✏️</button>
                     <button class="output-save-btn" data-idx="${idx}" title="保存到管理后台">💾</button>
                 </div>
-                <div class="output-content">${o.content}</div>
+                <div class="output-content" id="output-content-${idx}">${o.content}</div>
+                <div class="output-edit-area" id="output-edit-${idx}" style="display:none">
+                    <textarea class="output-textarea" id="output-textarea-${idx}" rows="6">${this.stripHtml(o.content)}</textarea>
+                    <div class="output-edit-actions">
+                        <button class="output-confirm-btn" data-idx="${idx}">✅ ${I18N.currentLang === 'zh' ? '保存编辑' : 'Save'}</button>
+                        <button class="output-cancel-btn" data-idx="${idx}">✕ ${I18N.currentLang === 'zh' ? '取消' : 'Cancel'}</button>
+                    </div>
+                </div>
             </div>`).join('');
-        // bind save buttons
+
+        el.querySelectorAll('.output-edit-btn').forEach(btn => {
+            btn.addEventListener('click', e => {
+                const idx = parseInt(e.currentTarget.dataset.idx);
+                const editArea = document.getElementById(`output-edit-${idx}`);
+                const contentEl = document.getElementById(`output-content-${idx}`);
+                const isOpen = editArea.style.display !== 'none';
+                editArea.style.display = isOpen ? 'none' : 'block';
+                if (contentEl) contentEl.style.display = isOpen ? '' : 'none';
+            });
+        });
+
+        el.querySelectorAll('.output-confirm-btn').forEach(btn => {
+            btn.addEventListener('click', e => {
+                const idx = parseInt(e.currentTarget.dataset.idx);
+                const ta = document.getElementById(`output-textarea-${idx}`);
+                if (ta) {
+                    const newText = ta.value;
+                    this.outputLines[idx].content = this.escapeHtml(newText).replace(/\n/g, '<br>');
+                    this.addLog('success', `已编辑: ${this.outputLines[idx].title}`);
+                    this.refreshOutput();
+                }
+            });
+        });
+
+        el.querySelectorAll('.output-cancel-btn').forEach(btn => {
+            btn.addEventListener('click', e => {
+                const idx = parseInt(e.currentTarget.dataset.idx);
+                document.getElementById(`output-edit-${idx}`).style.display = 'none';
+                const contentEl = document.getElementById(`output-content-${idx}`);
+                if (contentEl) contentEl.style.display = '';
+            });
+        });
+
         el.querySelectorAll('.output-save-btn').forEach(btn => {
             btn.addEventListener('click', e => {
                 const idx = parseInt(e.currentTarget.dataset.idx);
                 this.saveOutputToAdmin(this.outputLines[idx]);
             });
         });
+    }
+
+    stripHtml(html) {
+        return String(html).replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, '');
     }
 
     saveOutputToAdmin(output) {
@@ -342,18 +388,12 @@ class AgentModule {
             <div class="chat-welcome">
                 <div class="welcome-icon">🤖</div>
                 <div class="welcome-text">
-                    <p class="welcome-greeting">${zh
-                        ? '你好，我是你的<strong>个人科研助理</strong>。'
-                        : "Hi, I'm your <strong>Personal Research Assistant</strong>."}</p>
-                    <p>${zh
-                        ? '基于 <strong>OpenClaw</strong> 框架，专为陈实的科研工作流设计。'
-                        : "Built on <strong>OpenClaw</strong>, designed for Shi Chen's research workflow."}</p>
+                    <p class="welcome-greeting">${zh ? '你好，我是你的<strong>个人科研助理</strong>。' : "Hi, I'm your <strong>Personal Research Assistant</strong>."}</p>
                     <div class="welcome-about">
-                        <div class="about-item">🎯 <strong>${zh ? '设计理念' : 'Design'}</strong>：${zh ? '以你为中心，逐渐理解你的研究方向与偏好。' : 'You-centered, learning your research style over time.'}</div>
-                        <div class="about-item">🔬 <strong>${zh ? '科研支持' : 'Research'}</strong>：${zh ? '文献综述、实验设计、数据分析、论文写作。' : 'Literature review, experiment design, data analysis, writing.'}</div>
-                        <div class="about-item">⚡ <strong>${zh ? '工具调用' : 'Tools'}</strong>：${zh ? '点击左侧工具按钮，或直接告诉我你需要什么。' : 'Use the left panel tools, or just tell me what you need.'}</div>
+                        <div class="about-item">🎯 ${zh ? '以你为中心，逐渐理解你的研究方向与偏好。' : 'You-centered, learning your research style over time.'}</div>
+                        <div class="about-item">🔬 ${zh ? '文献综述、实验设计、数据分析、论文写作。' : 'Literature review, experiment design, data analysis, writing.'}</div>
+                        <div class="about-item">⚡ ${zh ? '点击左侧工具，或直接输入你的需求。' : 'Use left panel tools, or just type your request.'}</div>
                     </div>
-                    <p class="welcome-hint">${zh ? '今天想从哪里开始？' : 'Where would you like to start today?'}</p>
                 </div>
             </div>`;
     }
