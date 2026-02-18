@@ -91,7 +91,8 @@ class AgentModule {
         } else {
             const models = [
                 { key: 'claude-opus', label: zh ? 'Claude Opus — 深度推理' : 'Claude Opus — Deep Reasoning' },
-                { key: 'deepseek-r1', label: zh ? 'DeepSeek-R1 — 代码/逻辑' : 'DeepSeek-R1 — Code/Logic' },
+                { key: 'deepseek-v3', label: zh ? 'DeepSeek-V3 — 综合最强' : 'DeepSeek-V3 — Best Overall' },
+                { key: 'deepseek-r1', label: zh ? 'DeepSeek-R1 — 深度推理' : 'DeepSeek-R1 — Deep Reasoning' },
                 { key: 'qwen-max', label: zh ? 'Qwen-Max — 中文科研' : 'Qwen-Max — Chinese Research' },
             ];
             models.forEach(m => { opts += `<option value="${m.key}">${m.label}</option>`; });
@@ -125,11 +126,36 @@ class AgentModule {
     refreshOutput() {
         const el = document.getElementById('agent-output');
         if (!el) return;
-        el.innerHTML = this.outputLines.map(o => `
+        el.innerHTML = this.outputLines.map((o, idx) => `
             <div class="output-block">
-                <div class="output-title">${o.title} <span class="output-ts">${o.ts}</span></div>
+                <div class="output-title">
+                    ${o.title} <span class="output-ts">${o.ts}</span>
+                    <button class="output-save-btn" data-idx="${idx}" title="保存到管理后台">💾</button>
+                </div>
                 <div class="output-content">${o.content}</div>
             </div>`).join('');
+        // bind save buttons
+        el.querySelectorAll('.output-save-btn').forEach(btn => {
+            btn.addEventListener('click', e => {
+                const idx = parseInt(e.currentTarget.dataset.idx);
+                this.saveOutputToAdmin(this.outputLines[idx]);
+            });
+        });
+    }
+
+    saveOutputToAdmin(output) {
+        // Store in localStorage under admin-outputs key
+        const key = 'agent-admin-outputs';
+        const existing = JSON.parse(localStorage.getItem(key) || '[]');
+        existing.unshift({ ...output, savedAt: new Date().toISOString() });
+        if (existing.length > 100) existing.pop();
+        localStorage.setItem(key, JSON.stringify(existing));
+        this.addLog('success', `已保存到管理后台: ${output.title}`);
+        // Show brief notification
+        const zh = I18N.currentLang === 'zh';
+        if (this.notificationManager) {
+            this.notificationManager.show(zh ? '已保存到管理后台' : 'Saved to Admin', 'success');
+        }
     }
 
     render() {

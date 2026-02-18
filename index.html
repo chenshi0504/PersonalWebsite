@@ -42,6 +42,10 @@
                     <button id="lang-toggle" class="lang-toggle" aria-label="Switch language">
                         <span id="lang-label">中文</span>
                     </button>
+                    <div class="nav-clock" id="nav-clock">
+                        <span class="nav-clock-date" id="nav-clock-date"></span>
+                        <span class="nav-clock-time" id="nav-clock-time"></span>
+                    </div>
                     <!-- Theme toggle button will be added here dynamically -->
                 </div>
                 <div class="nav-toggle">
@@ -94,5 +98,17 @@
     <script src="js/components/interests-module.js"></script>
     <script src="js/components/admin-module.js"></script>
     <script src="js/app.js"></script>
+    <script>
+        // Live clock
+        function updateClock() {
+            const now = new Date();
+            const dateEl = document.getElementById('nav-clock-date');
+            const timeEl = document.getElementById('nav-clock-time');
+            if (dateEl) dateEl.textContent = now.toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit', weekday: 'short' });
+            if (timeEl) timeEl.textContent = now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+    </script>
 </body>
 </html>
