@@ -18,9 +18,13 @@ class AdminModule {
             return;
         }
 
-        console.log('初始化管理模块...');
         this.isInitialized = true;
-        console.log('管理模块初始化完成');
+        document.addEventListener('langchange', () => {
+            const mainContent = document.getElementById('main-content');
+            if (mainContent && mainContent.querySelector('.admin-container')) {
+                this.render(this.currentTab);
+            }
+        });
     }
 
     /**
@@ -28,6 +32,7 @@ class AdminModule {
      */
     render(tab = 'articles') {
         this.currentTab = tab;
+        const i = k => I18N.t(k);
 
         const mainContent = document.getElementById('main-content');
         if (!mainContent) {
@@ -38,8 +43,8 @@ class AdminModule {
         const html = `
             <div class="page-header">
                 <div class="container">
-                    <h1 class="page-title">内容管理</h1>
-                    <p class="page-subtitle">管理网站内容</p>
+                    <h1 class="page-title">${i('admin.title')}</h1>
+                    <p class="page-subtitle">${i('admin.subtitle')}</p>
                 </div>
             </div>
 

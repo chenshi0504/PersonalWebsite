@@ -63,6 +63,14 @@ class AgentModule {
                             <div class="cap-item">${i('agent.cap3')}</div>
                             <div class="cap-item">${i('agent.cap4')}</div>
                         </div>
+                        <div class="cap-title" style="margin-top:12px">Quick Actions</div>
+                        <div class="quick-actions">
+                            <button class="quick-action-btn" data-action="daily_brief">📋 ${I18N.currentLang === 'zh' ? '每日简报' : 'Daily Brief'}</button>
+                            <button class="quick-action-btn" data-action="get_schedule">📅 ${I18N.currentLang === 'zh' ? '今日日程' : 'Schedule'}</button>
+                            <button class="quick-action-btn" data-action="get_tasks">✅ ${I18N.currentLang === 'zh' ? '任务列表' : 'Tasks'}</button>
+                            <button class="quick-action-btn" data-action="get_workflow">🔄 ${I18N.currentLang === 'zh' ? '工作流' : 'Workflow'}</button>
+                            <button class="quick-action-btn" data-action="get_research_status">🔬 ${I18N.currentLang === 'zh' ? '科研进度' : 'Research'}</button>
+                        </div>
                     </div>
                 </aside>
 
@@ -187,6 +195,14 @@ class AgentModule {
             const item = e.target.closest('.session-item');
             if (item) this.switchSession(item.dataset.id);
         });
+
+        // Quick action buttons
+        document.querySelector('.quick-actions')?.addEventListener('click', async e => {
+            const btn = e.target.closest('.quick-action-btn');
+            if (!btn) return;
+            const action = btn.dataset.action;
+            await this.runQuickAction(action);
+        });
     }
 
     async sendMessage() {
@@ -242,11 +258,161 @@ class AgentModule {
             });
             if (!res.ok) throw new Error('API error');
             const data = await res.json();
+            // If tool result returned, render it as a card
+            if (data.toolResult) {
+                const toolCard = this.renderToolCard(data.toolName, data.toolResult);
+                const chatMessages = document.getElementById('chat-messages');
+                if (chatMessages) chatMessages.insertAdjacentHTML('beforeend', toolCard);
+            }
             return data.reply || data.message || data.content;
         }
-        // 占位回复
+        // Placeholder reply
         await new Promise(r => setTimeout(r, 900));
-        return `[Backend not connected]\n\nYou asked: "${message}"\n\nOnce the OpenClaw agent system is integrated, I'll provide intelligent responses here.`;
+        return `[Backend not connected]\n\nYou asked: "${message}"\n\nStart the backend with AgentSystem/start-backend.bat to enable AI responses.`;
+    }
+
+    async runQuickAction(action) {
+        const zh = I18N.currentLang === 'zh';
+        const labels = {
+            daily_brief: zh ? '生成每日简报...' : 'Generating daily brief...',
+            get_schedule: zh ? '获取今日日程...' : 'Fetching schedule...',
+            get_tasks: zh ? '获取任务列表...' : 'Fetching tasks...',
+            get_workflow: zh ? '获取工作流建议...' : 'Fetching workflow...',
+            get_research_status: zh ? '获取科研进度...' : 'Fetching research status...',
+        };
+        const userMsg = labels[action] || action;
+
+        const session = this.activeSession;
+        if (session.messages.length === 0) {
+            session.title = userMsg.slice(0, 20);
+            const titleEl = document.getElementById('chat-title');
+            if (titleEl) titleEl.textContent = session.title;
+            this.refreshSessionList();
+        }
+
+        session.messages.push({ role: 'user', content: userMsg });
+        this.appendMessage({ role: 'user', content: userMsg });
+
+        const chatMessages = document.getElementById('chat-messages');
+        chatMessages?.insertAdjacentHTML('beforeend', this.renderThinking());
+        this.scrollToBottom();
+        this.setInputDisabled(true);
+
+        try {
+            // Call tool endpoint directly
+            const toolEndpointMap = {
+                daily_brief: { url: 'http://localhost:3000/api/agent/daily-brief', method: 'POST' },
+                get_schedule: { url: 'http://localhost:3000/api/agent/schedule', method: 'GET' },
+                get_tasks: { url: 'http://localhost:3000/api/agent/tasks', method: 'GET' },
+                get_workflow: { url: 'http://localhost:3000/api/agent/workflow', method: 'GET' },
+                get_research_status: { url: 'http://localhost:3000/api/agent/research-status', method: 'GET' },
+            };
+            const endpoint = toolEndpointMap[action];
+            let toolData = null;
+            if (endpoint) {
+                const res = await fetch(endpoint.url, { method: endpoint.method, headers: { 'Content-Type': 'application/json' } });
+                if (res.ok) toolData = await res.json();
+            }
+
+            document.getElementById('thinking-msg')?.remove();
+            if (toolData) {
+                const card = this.renderToolCard(action, toolData);
+                chatMessages?.insertAdjacentHTML('beforeend', card);
+                session.messages.push({ role: 'assistant', content: `[Tool: ${action}]` });
+            } else {
+                this.appendMessage({ role: 'assistant', content: I18N.t('agent.error') });
+            }
+        } catch {
+            document.getElementById('thinking-msg')?.remove();
+            this.appendMessage({ role: 'assistant', content: zh ? '后端未连接，请先启动 AgentSystem/start-backend.bat' : 'Backend not connected. Please start AgentSystem/start-backend.bat' });
+        } finally {
+            this.setInputDisabled(false);
+            this.scrollToBottom();
+        }
+    }
+
+    renderToolCard(toolName, data) {
+        const zh = I18N.currentLang === 'zh';
+        let content = '';
+
+        if (toolName === 'get_schedule' || toolName === 'daily_brief') {
+            const items = data.schedule || [];
+            const scheduleHtml = items.map(s =>
+                `<div class="tool-schedule-item">
+                    <span class="tool-time">${s.time}</span>
+                    <span class="tool-task">${s.task}</span>
+                    <span class="tool-type tool-type-${s.type}">${s.type}</span>
+                </div>`
+            ).join('');
+
+            if (toolName === 'daily_brief') {
+                const highlights = (data.highlights || []).map(h => `<div class="tool-highlight">${h}</div>`).join('');
+                content = `
+                    <div class="tool-card-header">📋 ${data.date || ''} ${data.greeting || ''}</div>
+                    <p class="tool-summary">${data.summary || ''}</p>
+                    <div class="tool-progress">
+                        <span class="tool-stat done">✅ ${data.progress?.completed || 0}</span>
+                        <span class="tool-stat wip">🔄 ${data.progress?.inProgress || 0}</span>
+                        <span class="tool-stat pending">⏳ ${data.progress?.pending || 0}</span>
+                    </div>
+                    <div class="tool-highlights">${highlights}</div>
+                    <p class="tool-recommendation">💡 ${data.recommendation || ''}</p>
+                `;
+            } else {
+                content = `
+                    <div class="tool-card-header">📅 ${zh ? '今日日程' : "Today's Schedule"} — ${data.date || ''}</div>
+                    <div class="tool-schedule">${scheduleHtml}</div>
+                    ${data.reminder ? `<p class="tool-recommendation">💡 ${data.reminder}</p>` : ''}
+                `;
+            }
+        } else if (toolName === 'get_tasks') {
+            const taskHtml = (data.tasks || []).map(t =>
+                `<div class="tool-task-item priority-${t.priority}">
+                    <span class="tool-task-status">${t.status === 'completed' ? '✅' : t.status === 'in-progress' ? '🔄' : '⏳'}</span>
+                    <span class="tool-task-title">${t.title}</span>
+                    <span class="tool-task-priority">${t.priority}</span>
+                </div>`
+            ).join('');
+            content = `
+                <div class="tool-card-header">✅ ${zh ? '任务列表' : 'Task List'} (${data.total || 0} ${zh ? '项' : 'items'})</div>
+                <div class="tool-tasks">${taskHtml}</div>
+            `;
+        } else if (toolName === 'get_workflow') {
+            const stepHtml = (data.recommendedFlow || []).map(s =>
+                `<div class="tool-workflow-step status-${s.status}">
+                    <span class="step-num">${s.step}</span>
+                    <span class="step-action">${s.action}</span>
+                    <span class="step-agent">${s.agent}</span>
+                    <span class="step-status">${s.status === 'completed' ? '✅' : s.status === 'in-progress' ? '🔄' : '⏳'}</span>
+                </div>`
+            ).join('');
+            content = `
+                <div class="tool-card-header">🔄 ${zh ? '工作流' : 'Workflow'} — ${data.currentStage || ''}</div>
+                <div class="tool-workflow">${stepHtml}</div>
+                <p class="tool-recommendation">➡️ ${data.nextAction || ''}</p>
+            `;
+        } else if (toolName === 'get_research_status') {
+            const projHtml = (data.projects || []).map(p =>
+                `<div class="tool-project-item">
+                    <div class="tool-project-name">${p.name}</div>
+                    <div class="tool-project-bar"><div class="tool-project-fill" style="width:${p.progress}%"></div></div>
+                    <div class="tool-project-meta">${p.progress}% — ${p.nextMilestone}</div>
+                </div>`
+            ).join('');
+            content = `
+                <div class="tool-card-header">🔬 ${zh ? '科研进度' : 'Research Status'}</div>
+                <div class="tool-projects">${projHtml}</div>
+            `;
+        } else {
+            content = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+        }
+
+        return `
+            <div class="chat-message assistant">
+                <div class="msg-avatar">🤖</div>
+                <div class="msg-bubble tool-result-card">${content}</div>
+            </div>
+        `;
     }
 
     appendMessage(msg) {

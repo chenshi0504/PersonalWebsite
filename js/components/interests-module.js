@@ -26,9 +26,13 @@ class InterestsModule {
             return;
         }
 
-        console.log('初始化生活兴趣模块...');
         this.isInitialized = true;
-        console.log('生活兴趣模块初始化完成');
+        document.addEventListener('langchange', () => {
+            const mainContent = document.getElementById('main-content');
+            if (mainContent && mainContent.querySelector('.page-header')) {
+                this.render(this.currentView, this.currentInterest ? { id: this.currentInterest.id } : {});
+            }
+        });
     }
 
     /**
@@ -66,6 +70,7 @@ class InterestsModule {
      * 渲染网格视图
      */
     renderGridView() {
+        const i = k => I18N.t(k);
         const interests = this.getFilteredInterests();
         const categories = this.dataManager.getCategories('interests');
         const stats = this.dataManager.getStats().interests;
@@ -73,20 +78,20 @@ class InterestsModule {
         const html = `
             <div class="page-header">
                 <div class="container">
-                    <h1 class="page-title">生活兴趣</h1>
-                    <p class="page-subtitle">记录生活中的美好时光和个人兴趣爱好</p>
+                    <h1 class="page-title">${i('interests.title')}</h1>
+                    <p class="page-subtitle">${i('interests.subtitle')}</p>
                     <div class="page-stats">
                         <div class="stat-item">
                             <span class="stat-number">${stats.total}</span>
-                            <span class="stat-label">总动态</span>
+                            <span class="stat-label">${i('interests.total')}</span>
                         </div>
                         <div class="stat-item">
                             <span class="stat-number">${stats.categories}</span>
-                            <span class="stat-label">兴趣分类</span>
+                            <span class="stat-label">${i('interests.categories')}</span>
                         </div>
                         <div class="stat-item">
                             <span class="stat-number">${stats.photos}</span>
-                            <span class="stat-label">照片数量</span>
+                            <span class="stat-label">${i('interests.photos')}</span>
                         </div>
                     </div>
                 </div>
@@ -97,16 +102,16 @@ class InterestsModule {
                     <div class="interests-controls">
                         <div class="view-switcher">
                             <button class="btn btn-ghost view-btn ${this.currentView === 'grid' ? 'active' : ''}" data-view="grid">
-                                <span>⊞</span> 网格视图
+                                ${i('interests.gridView')}
                             </button>
                             <button class="btn btn-ghost view-btn ${this.currentView === 'timeline' ? 'active' : ''}" data-view="timeline">
-                                <span>📅</span> 时间线
+                                ${i('interests.timelineView')}
                             </button>
                         </div>
 
                         <div class="category-filter">
                             <button class="btn btn-ghost category-btn ${!this.currentCategory ? 'active' : ''}" data-category="">
-                                全部
+                                ${i('interests.all')}
                             </button>
                             ${categories.map(category => `
                                 <button class="btn btn-ghost category-btn ${this.currentCategory === category ? 'active' : ''}" data-category="${category}">
@@ -134,14 +139,15 @@ class InterestsModule {
      * 渲染时间线视图
      */
     renderTimelineView() {
+        const i = k => I18N.t(k);
         const interests = this.getFilteredInterests().sort((a, b) => new Date(b.date) - new Date(a.date));
         const categories = this.dataManager.getCategories('interests');
 
         const html = `
             <div class="page-header">
                 <div class="container">
-                    <h1 class="page-title">生活时间线</h1>
-                    <p class="page-subtitle">按时间顺序回顾生活中的精彩瞬间</p>
+                    <h1 class="page-title">${i('interests.timelineTitle')}</h1>
+                    <p class="page-subtitle">${i('interests.timelineSubtitle')}</p>
                 </div>
             </div>
 
@@ -150,16 +156,16 @@ class InterestsModule {
                     <div class="interests-controls">
                         <div class="view-switcher">
                             <button class="btn btn-ghost view-btn ${this.currentView === 'grid' ? 'active' : ''}" data-view="grid">
-                                <span>⊞</span> 网格视图
+                                ${i('interests.gridView')}
                             </button>
                             <button class="btn btn-ghost view-btn ${this.currentView === 'timeline' ? 'active' : ''}" data-view="timeline">
-                                <span>📅</span> 时间线
+                                ${i('interests.timelineView')}
                             </button>
                         </div>
 
                         <div class="category-filter">
                             <button class="btn btn-ghost category-btn ${!this.currentCategory ? 'active' : ''}" data-category="">
-                                全部
+                                ${i('interests.all')}
                             </button>
                             ${categories.map(category => `
                                 <button class="btn btn-ghost category-btn ${this.currentCategory === category ? 'active' : ''}" data-category="${category}">
@@ -247,13 +253,14 @@ class InterestsModule {
      * @returns {string} HTML字符串
      */
     renderInterestCard(interest) {
+        const i = k => I18N.t(k);
         return `
             <div class="interest-card" data-id="${interest.id}">
                 ${interest.image ? `
                     <div class="interest-image">
                         <img src="${interest.image}" alt="${interest.title}" loading="lazy">
                         <div class="interest-overlay">
-                            <button class="btn btn-primary view-detail-btn">查看详情</button>
+                            <button class="btn btn-primary view-detail-btn">${i('interests.viewDetail')}</button>
                         </div>
                     </div>
                 ` : ''}
@@ -289,6 +296,7 @@ class InterestsModule {
      * @param {string} id - 兴趣ID
      */
     renderInterestDetail(id) {
+        const i = k => I18N.t(k);
         const interest = this.dataManager.getInterestById(id);
         if (!interest) {
             this.notificationManager.show('兴趣不存在', 'error');
@@ -302,7 +310,7 @@ class InterestsModule {
             <div class="page-header">
                 <div class="container">
                     <nav class="breadcrumb">
-                        <a href="#" class="breadcrumb-link" data-action="back">生活兴趣</a>
+                        <a href="#" class="breadcrumb-link" data-action="back">${i('interests.backToList')}</a>
                         <span class="breadcrumb-separator">></span>
                         <span class="breadcrumb-current">${interest.title}</span>
                     </nav>
@@ -332,7 +340,7 @@ class InterestsModule {
 
                             ${interest.tags && interest.tags.length > 0 ? `
                                 <div class="detail-tags">
-                                    <h3>标签</h3>
+                                    <h3>${i('interests.tags')}</h3>
                                     <div class="tags-list">
                                         ${interest.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
                                     </div>
@@ -341,7 +349,7 @@ class InterestsModule {
 
                             ${interest.gallery && interest.gallery.length > 0 ? `
                                 <div class="detail-gallery">
-                                    <h3>相册</h3>
+                                    <h3>${i('interests.album')}</h3>
                                     <div class="gallery-grid">
                                         ${interest.gallery.map(image => `
                                             <div class="gallery-item">
@@ -370,11 +378,12 @@ class InterestsModule {
      * @returns {string} HTML字符串
      */
     renderEmptyState() {
+        const i = k => I18N.t(k);
         return `
             <div class="empty-state">
                 <div class="empty-icon">🎨</div>
-                <h3 class="empty-title">暂无兴趣动态</h3>
-                <p class="empty-description">还没有记录任何兴趣爱好，开始分享你的生活吧！</p>
+                <h3 class="empty-title">${i('interests.title')}</h3>
+                <p class="empty-description">${i('interests.noResults')}</p>
             </div>
         `;
     }

@@ -1502,3 +1502,122 @@
     .module-about-hero h1 { font-size: var(--font-size-3xl); }
     .about-section-card { flex-direction: column; gap: var(--spacing-sm); }
 }
+
+/* ===== Quick Actions & Tool Cards ===== */
+.quick-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+.quick-action-btn {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    color: var(--color-text-secondary);
+    padding: 6px 10px;
+    font-size: 12px;
+    text-align: left;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    width: 100%;
+}
+
+.quick-action-btn:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    background: var(--color-bg-card);
+}
+
+/* Tool result cards */
+.tool-result-card {
+    background: var(--color-bg-card) !important;
+    border: 1px solid var(--color-border) !important;
+    border-left: 3px solid var(--color-accent) !important;
+    padding: var(--spacing-md) !important;
+    font-size: var(--font-size-sm);
+    max-width: 520px;
+}
+
+.tool-card-header {
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-sm);
+    font-size: var(--font-size-base);
+}
+
+.tool-summary, .tool-recommendation {
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin: var(--spacing-sm) 0;
+    font-size: 13px;
+}
+
+.tool-progress {
+    display: flex;
+    gap: var(--spacing-md);
+    margin: var(--spacing-sm) 0;
+}
+
+.tool-stat {
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.tool-stat.done { background: rgba(0,170,100,0.15); color: #00aa64; }
+.tool-stat.wip { background: rgba(255,165,0,0.15); color: #ffa500; }
+.tool-stat.pending { background: rgba(100,100,100,0.15); color: var(--color-text-muted); }
+
+.tool-highlights { display: flex; flex-direction: column; gap: 4px; margin: var(--spacing-sm) 0; }
+.tool-highlight { font-size: 12px; color: var(--color-text-secondary); }
+
+.tool-schedule { display: flex; flex-direction: column; gap: 6px; }
+.tool-schedule-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: 5px 0;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 12px;
+}
+.tool-time { color: var(--color-accent); font-weight: 600; min-width: 45px; }
+.tool-task { flex: 1; color: var(--color-text-primary); }
+.tool-type { font-size: 10px; padding: 2px 6px; border-radius: 8px; background: var(--color-bg-secondary); color: var(--color-text-muted); }
+
+.tool-tasks { display: flex; flex-direction: column; gap: 6px; }
+.tool-task-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: 5px 0;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 12px;
+}
+.tool-task-title { flex: 1; color: var(--color-text-primary); }
+.tool-task-priority { font-size: 10px; padding: 2px 6px; border-radius: 8px; }
+.priority-high .tool-task-priority { background: rgba(255,80,80,0.15); color: #ff5050; }
+.priority-medium .tool-task-priority { background: rgba(255,165,0,0.15); color: #ffa500; }
+.priority-low .tool-task-priority { background: rgba(100,100,100,0.15); color: var(--color-text-muted); }
+
+.tool-workflow { display: flex; flex-direction: column; gap: 6px; }
+.tool-workflow-step {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: 5px 0;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 12px;
+}
+.step-num { width: 20px; height: 20px; border-radius: 50%; background: var(--color-bg-secondary); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; }
+.step-action { flex: 1; color: var(--color-text-primary); }
+.step-agent { font-size: 10px; color: var(--color-text-muted); }
+
+.tool-projects { display: flex; flex-direction: column; gap: var(--spacing-sm); }
+.tool-project-item { padding: var(--spacing-sm) 0; border-bottom: 1px solid var(--color-border); }
+.tool-project-name { font-size: 13px; color: var(--color-text-primary); margin-bottom: 4px; font-weight: 500; }
+.tool-project-bar { height: 6px; background: var(--color-bg-secondary); border-radius: 3px; overflow: hidden; margin-bottom: 4px; }
+.tool-project-fill { height: 100%; background: var(--color-accent); border-radius: 3px; transition: width 0.5s ease; }
+.tool-project-meta { font-size: 11px; color: var(--color-text-muted); }

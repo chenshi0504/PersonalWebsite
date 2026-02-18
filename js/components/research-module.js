@@ -29,9 +29,13 @@ class ResearchModule {
             return;
         }
 
-        console.log('初始化科研项目模块...');
         this.isInitialized = true;
-        console.log('科研项目模块初始化完成');
+        document.addEventListener('langchange', () => {
+            const mainContent = document.getElementById('main-content');
+            if (mainContent && mainContent.querySelector('.page-header')) {
+                this.render(this.currentView, this.currentProject ? { id: this.currentProject.id } : {});
+            }
+        });
     }
 
     /**
@@ -63,6 +67,7 @@ class ResearchModule {
      * 渲染项目列表
      */
     renderProjectList() {
+        const i = k => I18N.t(k);
         const projects = this.getFilteredProjects();
         const categories = this.dataManager.getCategories('projects');
         const tags = this.dataManager.getTags('projects');
@@ -71,20 +76,20 @@ class ResearchModule {
         const html = `
             <div class="page-header">
                 <div class="container">
-                    <h1 class="page-title">科研项目</h1>
-                    <p class="page-subtitle">展示我的研究项目和技术成果</p>
+                    <h1 class="page-title">${i('research.title')}</h1>
+                    <p class="page-subtitle">${i('research.subtitle')}</p>
                     <div class="page-stats">
                         <div class="stat-item">
                             <span class="stat-number">${stats.total}</span>
-                            <span class="stat-label">总项目</span>
+                            <span class="stat-label">${i('research.total')}</span>
                         </div>
                         <div class="stat-item">
                             <span class="stat-number">${stats.completed}</span>
-                            <span class="stat-label">已完成</span>
+                            <span class="stat-label">${i('research.completed')}</span>
                         </div>
                         <div class="stat-item">
                             <span class="stat-number">${stats.inProgress}</span>
-                            <span class="stat-label">进行中</span>
+                            <span class="stat-label">${i('research.inProgress')}</span>
                         </div>
                     </div>
                 </div>
@@ -95,22 +100,22 @@ class ResearchModule {
                     <div class="content-grid">
                         <aside class="sidebar">
                             <div class="sidebar-section">
-                                <h3 class="sidebar-title">搜索</h3>
+                                <h3 class="sidebar-title">${i('research.search')}</h3>
                                 <div class="search-box">
                                     <input type="text" 
                                            class="search-input input" 
-                                           placeholder="搜索项目..."
+                                           placeholder="${i('research.searchPlaceholder')}"
                                            value="${this.currentFilters.search}">
                                     <span class="search-icon">🔍</span>
                                 </div>
                             </div>
 
                             <div class="sidebar-section">
-                                <h3 class="sidebar-title">分类</h3>
+                                <h3 class="sidebar-title">${i('research.category')}</h3>
                                 <div class="filter-group">
                                     <label class="filter-item">
                                         <input type="radio" name="category" value="" ${!this.currentFilters.category ? 'checked' : ''}>
-                                        <span>全部</span>
+                                        <span>${i('research.all')}</span>
                                     </label>
                                     ${categories.map(category => `
                                         <label class="filter-item">
@@ -122,29 +127,29 @@ class ResearchModule {
                             </div>
 
                             <div class="sidebar-section">
-                                <h3 class="sidebar-title">状态</h3>
+                                <h3 class="sidebar-title">${i('research.status')}</h3>
                                 <div class="filter-group">
                                     <label class="filter-item">
                                         <input type="radio" name="status" value="" ${!this.currentFilters.status ? 'checked' : ''}>
-                                        <span>全部</span>
+                                        <span>${i('research.all')}</span>
                                     </label>
                                     <label class="filter-item">
                                         <input type="radio" name="status" value="completed" ${this.currentFilters.status === 'completed' ? 'checked' : ''}>
-                                        <span>已完成</span>
+                                        <span>${i('research.statusCompleted')}</span>
                                     </label>
                                     <label class="filter-item">
                                         <input type="radio" name="status" value="in-progress" ${this.currentFilters.status === 'in-progress' ? 'checked' : ''}>
-                                        <span>进行中</span>
+                                        <span>${i('research.statusInProgress')}</span>
                                     </label>
                                     <label class="filter-item">
                                         <input type="radio" name="status" value="planning" ${this.currentFilters.status === 'planning' ? 'checked' : ''}>
-                                        <span>计划中</span>
+                                        <span>${i('research.statusPlanning')}</span>
                                     </label>
                                 </div>
                             </div>
 
                             <div class="sidebar-section">
-                                <h3 class="sidebar-title">技术标签</h3>
+                                <h3 class="sidebar-title">${i('research.tags')}</h3>
                                 <div class="tags-filter">
                                     ${tags.map(tag => `
                                         <label class="tag-filter-item">
@@ -156,25 +161,22 @@ class ResearchModule {
                             </div>
 
                             <div class="sidebar-section">
-                                <h3 class="sidebar-title">排序</h3>
+                                <h3 class="sidebar-title">${i('research.sort')}</h3>
                                 <select class="sort-select input">
-                                    <option value="startDate-desc" ${this.currentSort.field === 'startDate' && this.currentSort.order === 'desc' ? 'selected' : ''}>最新项目</option>
-                                    <option value="startDate-asc" ${this.currentSort.field === 'startDate' && this.currentSort.order === 'asc' ? 'selected' : ''}>最早项目</option>
-                                    <option value="title-asc" ${this.currentSort.field === 'title' && this.currentSort.order === 'asc' ? 'selected' : ''}>标题 A-Z</option>
-                                    <option value="title-desc" ${this.currentSort.field === 'title' && this.currentSort.order === 'desc' ? 'selected' : ''}>标题 Z-A</option>
+                                    <option value="startDate-desc" ${this.currentSort.field === 'startDate' && this.currentSort.order === 'desc' ? 'selected' : ''}>${i('research.sortNewest')}</option>
+                                    <option value="startDate-asc" ${this.currentSort.field === 'startDate' && this.currentSort.order === 'asc' ? 'selected' : ''}>${i('research.sortOldest')}</option>
+                                    <option value="title-asc" ${this.currentSort.field === 'title' && this.currentSort.order === 'asc' ? 'selected' : ''}>${i('research.sortTitleAZ')}</option>
+                                    <option value="title-desc" ${this.currentSort.field === 'title' && this.currentSort.order === 'desc' ? 'selected' : ''}>${i('research.sortTitleZA')}</option>
                                 </select>
                             </div>
 
                             ${this.hasActiveFilters() ? `
                                 <div class="sidebar-section">
-                                    <h3 class="sidebar-title">当前筛选</h3>
                                     <div class="active-filters">
-                                        <div class="filter-summary">
-                                            ${this.getFilterSummary()}
-                                        </div>
+                                        <div class="filter-summary">${this.getFilterSummary()}</div>
                                         <div class="filter-actions">
-                                            <button class="btn btn-ghost btn-small clear-filters">清除全部</button>
-                                            <button class="btn btn-ghost btn-small share-filters">分享筛选</button>
+                                            <button class="btn btn-ghost btn-small clear-filters">${i('research.clearFilters')}</button>
+                                            <button class="btn btn-ghost btn-small share-filters">${i('research.shareFilters')}</button>
                                         </div>
                                     </div>
                                 </div>
@@ -184,14 +186,14 @@ class ResearchModule {
                         <main class="main-content-area">
                             <div class="projects-header">
                                 <div class="projects-count">
-                                    找到 <strong>${projects.length}</strong> 个项目
+                                    ${i('research.found')} <strong>${projects.length}</strong> ${i('research.projects')}
                                 </div>
                                 <div class="view-controls">
                                     <button class="btn btn-ghost view-btn active" data-view="grid">
-                                        <span>⊞</span> 网格
+                                        <span>⊞</span> ${i('research.grid')}
                                     </button>
                                     <button class="btn btn-ghost view-btn" data-view="list">
-                                        <span>☰</span> 列表
+                                        <span>☰</span> ${i('research.list')}
                                     </button>
                                 </div>
                             </div>
@@ -242,6 +244,7 @@ class ResearchModule {
      * @returns {string} HTML字符串
      */
     renderProjectCard(project) {
+        const i = k => I18N.t(k);
         const statusClass = this.getStatusClass(project.status);
         const statusText = this.getStatusText(project.status);
         const duration = this.calculateProjectDuration(project);
@@ -255,7 +258,7 @@ class ResearchModule {
                         <img src="${imageUrl}" alt="${project.title}" loading="lazy">
                         <div class="project-image-overlay">
                             <button class="btn btn-primary view-project" data-project-id="${project.id}">
-                                查看详情
+                                ${i('research.viewDetail')}
                             </button>
                         </div>
                     </div>
@@ -268,7 +271,7 @@ class ResearchModule {
                         </h3>
                         <div class="project-status">
                             <span class="status-badge ${statusClass}">${statusText}</span>
-                            ${project.featured ? '<span class="featured-badge">⭐ 精选</span>' : ''}
+                            ${project.featured ? `<span class="featured-badge">${i('research.featured')}</span>` : ''}
                         </div>
                     </div>
 
@@ -276,11 +279,11 @@ class ResearchModule {
 
                     <div class="project-meta">
                         <div class="project-category">
-                            <span class="meta-label">分类:</span>
+                            <span class="meta-label">${i('research.category_label')}</span>
                             <span class="meta-value">${project.category}</span>
                         </div>
                         <div class="project-duration">
-                            <span class="meta-label">周期:</span>
+                            <span class="meta-label">${i('research.duration_label')}</span>
                             <span class="meta-value">${duration}</span>
                         </div>
                     </div>
@@ -296,16 +299,16 @@ class ResearchModule {
 
                     <div class="project-actions">
                         <button class="btn btn-primary btn-small view-project" data-project-id="${project.id}">
-                            查看详情
+                            ${i('research.viewDetail')}
                         </button>
                         ${project.links?.demo ?
                 `<a href="${project.links.demo}" target="_blank" class="btn btn-secondary btn-small">
-                                演示
+                                ${i('research.demo')}
                             </a>` : ''
             }
                         ${project.links?.github ?
                 `<a href="${project.links.github}" target="_blank" class="btn btn-ghost btn-small">
-                                代码
+                                ${i('research.code')}
                             </a>` : ''
             }
                     </div>
@@ -319,12 +322,13 @@ class ResearchModule {
      * @returns {string} HTML字符串
      */
     renderEmptyState() {
+        const i = k => I18N.t(k);
         return `
             <div class="empty-state">
                 <div class="empty-icon">🔬</div>
-                <h3>暂无项目</h3>
-                <p>没有找到符合条件的项目，请尝试调整筛选条件。</p>
-                <button class="btn btn-primary clear-filters">清除筛选</button>
+                <h3>${i('research.notFound')}</h3>
+                <p>${i('research.noResults')}</p>
+                <button class="btn btn-primary clear-filters">${i('research.clearFilters')}</button>
             </div>
         `;
     }
@@ -334,6 +338,7 @@ class ResearchModule {
      * @param {string} projectId - 项目ID
      */
     renderProjectDetail(projectId) {
+        const i = k => I18N.t(k);
         const project = this.dataManager.getProjectById(projectId);
 
         if (!project) {
@@ -351,7 +356,7 @@ class ResearchModule {
                 <div class="project-hero">
                     <div class="container">
                         <nav class="breadcrumb">
-                            <a href="#/research" class="breadcrumb-link">科研项目</a>
+                            <a href="#/research" class="breadcrumb-link">${i('research.backToList')}</a>
                             <span class="breadcrumb-separator">›</span>
                             <span class="breadcrumb-current">${project.title}</span>
                         </nav>
@@ -363,20 +368,20 @@ class ResearchModule {
                                 
                                 <div class="project-hero-meta">
                                     <div class="meta-item">
-                                        <span class="meta-label">状态:</span>
+                                        <span class="meta-label">${i('research.status_label')}</span>
                                         <span class="status-badge ${statusClass}">${statusText}</span>
                                     </div>
                                     <div class="meta-item">
-                                        <span class="meta-label">分类:</span>
+                                        <span class="meta-label">${i('research.category_label')}</span>
                                         <span class="meta-value">${project.category}</span>
                                     </div>
                                     <div class="meta-item">
-                                        <span class="meta-label">周期:</span>
+                                        <span class="meta-label">${i('research.duration_label')}</span>
                                         <span class="meta-value">${duration}</span>
                                     </div>
                                     ${project.featured ? `
                                         <div class="meta-item">
-                                            <span class="featured-badge">⭐ 精选项目</span>
+                                            <span class="featured-badge">${i('research.featured')}</span>
                                         </div>
                                     ` : ''}
                                 </div>
@@ -384,16 +389,16 @@ class ResearchModule {
                                 <div class="project-hero-actions">
                                     ${project.links?.demo ?
                 `<a href="${project.links.demo}" target="_blank" class="btn btn-primary">
-                                            <span>🚀</span> 查看演示
+                                            <span>🚀</span> ${i('research.liveDemo')}
                                         </a>` : ''
             }
                                     ${project.links?.github ?
                 `<a href="${project.links.github}" target="_blank" class="btn btn-secondary">
-                                            <span>📂</span> 查看代码
+                                            <span>📂</span> ${i('research.sourceCode')}
                                         </a>` : ''
             }
                                     <button class="btn btn-ghost share-project">
-                                        <span>📤</span> 分享项目
+                                        <span>📤</span> ${i('research.share')}
                                     </button>
                                 </div>
                             </div>
@@ -412,7 +417,7 @@ class ResearchModule {
                         <div class="project-content-grid">
                             <main class="project-main-content">
                                 <section class="project-section">
-                                    <h2>技术栈</h2>
+                                    <h2>${i('research.techStack')}</h2>
                                     <div class="technologies-list">
                                         ${project.technologies.map(tech =>
                 `<span class="tag tag-primary">${tech}</span>`
@@ -422,11 +427,11 @@ class ResearchModule {
 
                                 ${project.images && project.images.length > 1 ? `
                                     <section class="project-section">
-                                        <h2>项目截图</h2>
+                                        <h2>${i('research.screenshots')}</h2>
                                         <div class="project-gallery">
                                             ${project.images.map((image, index) => `
                                                 <div class="gallery-item" data-index="${index}">
-                                                    <img src="images/projects/${image}" alt="${project.title} - 截图 ${index + 1}" loading="lazy">
+                                                    <img src="images/projects/${image}" alt="${project.title} - ${index + 1}" loading="lazy">
                                                 </div>
                                             `).join('')}
                                         </div>
@@ -434,7 +439,7 @@ class ResearchModule {
                                 ` : ''}
 
                                 <section class="project-section">
-                                    <h2>项目标签</h2>
+                                    <h2>${i('research.projectTags')}</h2>
                                     <div class="project-tags">
                                         ${project.tags.map(tag =>
                 `<span class="tag">${tag}</span>`
@@ -445,26 +450,26 @@ class ResearchModule {
 
                             <aside class="project-sidebar">
                                 <div class="project-info-card card">
-                                    <h3>项目信息</h3>
+                                    <h3>${i('research.projectInfo')}</h3>
                                     <div class="info-list">
                                         <div class="info-item">
-                                            <span class="info-label">开始时间</span>
-                                            <span class="info-value">${Utils.formatDate(project.startDate, 'YYYY年MM月DD日')}</span>
+                                            <span class="info-label">${i('research.startDate')}</span>
+                                            <span class="info-value">${Utils.formatDate(project.startDate, 'YYYY-MM-DD')}</span>
                                         </div>
                                         ${project.endDate ? `
                                             <div class="info-item">
-                                                <span class="info-label">结束时间</span>
-                                                <span class="info-value">${Utils.formatDate(project.endDate, 'YYYY年MM月DD日')}</span>
+                                                <span class="info-label">${i('research.endDate')}</span>
+                                                <span class="info-value">${Utils.formatDate(project.endDate, 'YYYY-MM-DD')}</span>
                                             </div>
                                         ` : ''}
                                         <div class="info-item">
-                                            <span class="info-label">项目状态</span>
+                                            <span class="info-label">${i('research.status_label')}</span>
                                             <span class="info-value">
                                                 <span class="status-badge ${statusClass}">${statusText}</span>
                                             </span>
                                         </div>
                                         <div class="info-item">
-                                            <span class="info-label">项目分类</span>
+                                            <span class="info-label">${i('research.category_label')}</span>
                                             <span class="info-value">${project.category}</span>
                                         </div>
                                     </div>
@@ -472,19 +477,19 @@ class ResearchModule {
 
                                 ${project.links && Object.keys(project.links).length > 0 ? `
                                     <div class="project-links-card card">
-                                        <h3>相关链接</h3>
+                                        <h3>${i('research.links')}</h3>
                                         <div class="links-list">
                                             ${project.links.demo ? `
                                                 <a href="${project.links.demo}" target="_blank" class="link-item">
                                                     <span class="link-icon">🚀</span>
-                                                    <span class="link-text">在线演示</span>
+                                                    <span class="link-text">${i('research.liveDemo')}</span>
                                                     <span class="link-arrow">→</span>
                                                 </a>
                                             ` : ''}
                                             ${project.links.github ? `
                                                 <a href="${project.links.github}" target="_blank" class="link-item">
                                                     <span class="link-icon">📂</span>
-                                                    <span class="link-text">源代码</span>
+                                                    <span class="link-text">${i('research.sourceCode')}</span>
                                                     <span class="link-arrow">→</span>
                                                 </a>
                                             ` : ''}
@@ -498,7 +503,7 @@ class ResearchModule {
 
                 <div class="related-projects-section">
                     <div class="container">
-                        <h2>相关项目</h2>
+                        <h2>${i('research.relatedProjects')}</h2>
                         <div class="related-projects">
                             ${this.renderRelatedProjects(project)}
                         </div>
@@ -520,6 +525,7 @@ class ResearchModule {
      * @returns {string} HTML字符串
      */
     renderRelatedProjects(currentProject) {
+        const i = k => I18N.t(k);
         const allProjects = this.dataManager.getProjects();
         const relatedProjects = allProjects
             .filter(p => p.id !== currentProject.id)
@@ -530,7 +536,7 @@ class ResearchModule {
             .slice(0, 3);
 
         if (relatedProjects.length === 0) {
-            return '<p class="text-muted">暂无相关项目</p>';
+            return `<p class="text-muted">${i('research.noRelated')}</p>`;
         }
 
         return `
@@ -556,16 +562,17 @@ class ResearchModule {
      * 渲染项目未找到页面
      */
     renderProjectNotFound() {
+        const i = k => I18N.t(k);
         const html = `
             <div class="not-found-page">
                 <div class="container">
                     <div class="not-found-content">
                         <div class="not-found-icon">🔍</div>
-                        <h1>项目未找到</h1>
-                        <p>抱歉，您访问的项目不存在或已被删除。</p>
+                        <h1>${i('research.notFound')}</h1>
+                        <p>${i('research.notFoundDesc')}</p>
                         <div class="not-found-actions">
-                            <a href="#/research" class="btn btn-primary">返回项目列表</a>
-                            <a href="#/" class="btn btn-secondary">返回首页</a>
+                            <a href="#/research" class="btn btn-primary">${i('research.backToResearch')}</a>
+                            <a href="#/" class="btn btn-secondary">${i('research.backToHome')}</a>
                         </div>
                     </div>
                 </div>
@@ -926,13 +933,13 @@ class ResearchModule {
      * @returns {string} 状态文本
      */
     getStatusText(status) {
-        const statusTexts = {
-            'completed': '已完成',
-            'in-progress': '进行中',
-            'planning': '计划中',
-            'paused': '已暂停'
+        const map = {
+            'completed': 'research.statusCompleted',
+            'in-progress': 'research.statusInProgress',
+            'planning': 'research.statusPlanning',
+            'paused': 'research.statusPaused'
         };
-        return statusTexts[status] || '未知';
+        return I18N.t(map[status] || 'research.all');
     }
 
     /**
