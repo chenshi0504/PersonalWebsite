@@ -109,6 +109,10 @@ class PersonalWebsite {
 
         // 设置路由变化回调
         this.router.onRouteChange = (path) => {
+            // 非 agent 页面移除全屏 class
+            if (path !== '/agent') {
+                document.getElementById('main-content')?.classList.remove('agent-fullscreen');
+            }
             this.scrollToTop();
         };
 
@@ -180,46 +184,90 @@ class PersonalWebsite {
             <div class="hero-section">
                 <div class="container">
                     <div class="hero-content">
-                        <h1 class="hero-title">Welcome to My Personal Website</h1>
+                        <h1 class="hero-title">${i('home.heroTitle')}</h1>
                         <p class="hero-subtitle">${i('home.subtitle')}</p>
                         <div class="hero-actions">
                             <a href="images/SHI+CHEN-CV.pdf" target="_blank" class="btn btn-accent">${i('home.cv')}</a>
-                            <a href="#/research" class="btn btn-outline">${i('home.viewProjects')}</a>
-                            <a href="#/interests" class="btn btn-outline">${i('home.viewGallery')}</a>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
             <div class="modules-preview">
                 <div class="container">
                     <div class="modules-grid">
+
                         <div class="module-card" data-module="agent">
                             <div class="module-icon">🤖</div>
                             <h3>${i('home.agent.title')}</h3>
-                            <p>${i('home.agent.desc')}</p>
-                            <a href="#/agent" class="module-link">${i('home.agent.link')}</a>
+                            <p class="module-desc">${i('home.agent.desc')}</p>
+                            <div class="module-detail">
+                                <p>${i('home.agent.detail')}</p>
+                                <ul class="module-features">
+                                    <li>${i('home.agent.f1')}</li>
+                                    <li>${i('home.agent.f2')}</li>
+                                    <li>${i('home.agent.f3')}</li>
+                                </ul>
+                            </div>
+                            <div class="module-actions">
+                                <button class="btn btn-ghost btn-sm module-expand-btn">${i('home.learnMore')}</button>
+                                <a href="#/agent" class="btn btn-accent btn-sm">${i('home.enter')}</a>
+                            </div>
                         </div>
-                        
+
                         <div class="module-card" data-module="research">
                             <div class="module-icon">🔬</div>
                             <h3>${i('home.research.title')}</h3>
-                            <p>${i('home.research.desc')}</p>
-                            <a href="#/research" class="module-link">${i('home.research.link')}</a>
+                            <p class="module-desc">${i('home.research.desc')}</p>
+                            <div class="module-detail">
+                                <p>${i('home.research.detail')}</p>
+                                <ul class="module-features">
+                                    <li>${i('home.research.f1')}</li>
+                                    <li>${i('home.research.f2')}</li>
+                                    <li>${i('home.research.f3')}</li>
+                                </ul>
+                            </div>
+                            <div class="module-actions">
+                                <button class="btn btn-ghost btn-sm module-expand-btn">${i('home.learnMore')}</button>
+                                <a href="#/research" class="btn btn-accent btn-sm">${i('home.enter')}</a>
+                            </div>
                         </div>
-                        
+
                         <div class="module-card" data-module="interests">
                             <div class="module-icon">🎨</div>
                             <h3>${i('home.interests.title')}</h3>
-                            <p>${i('home.interests.desc')}</p>
-                            <a href="#/interests" class="module-link">${i('home.interests.link')}</a>
+                            <p class="module-desc">${i('home.interests.desc')}</p>
+                            <div class="module-detail">
+                                <p>${i('home.interests.detail')}</p>
+                                <ul class="module-features">
+                                    <li>${i('home.interests.f1')}</li>
+                                    <li>${i('home.interests.f2')}</li>
+                                    <li>${i('home.interests.f3')}</li>
+                                </ul>
+                            </div>
+                            <div class="module-actions">
+                                <button class="btn btn-ghost btn-sm module-expand-btn">${i('home.learnMore')}</button>
+                                <a href="#/interests" class="btn btn-accent btn-sm">${i('home.enter')}</a>
+                            </div>
                         </div>
+
                     </div>
                 </div>
             </div>
         `;
 
         this.renderContent(content);
+
+        // 绑定展开/收起按钮
+        document.querySelectorAll('.module-expand-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const card = btn.closest('.module-card');
+                const detail = card.querySelector('.module-detail');
+                const expanded = card.classList.toggle('expanded');
+                detail.style.display = expanded ? 'block' : 'none';
+                btn.textContent = expanded ? I18N.t('home.collapse') : I18N.t('home.learnMore');
+            });
+        });
     }
 
     /**
@@ -234,6 +282,8 @@ class PersonalWebsite {
                 this.currentModule = new AgentModule(this.dataManager, this.notificationManager);
                 this.currentModule.init();
             }
+            // agent 页面全屏，移除 padding
+            document.getElementById('main-content').classList.add('agent-fullscreen');
             this.currentModule.render();
         }, 'Agent page failed to load');
     }
