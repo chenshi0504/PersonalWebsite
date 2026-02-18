@@ -1,0 +1,137 @@
+[
+    {
+        "id": "project-001",
+        "title": "智能数据分析平台",
+        "description": "基于机器学习的数据分析和可视化平台，支持多种数据源和算法模型。该平台集成了数据预处理、特征工程、模型训练和结果可视化等完整流程，为数据科学家提供了一站式的分析工具。",
+        "technologies": ["Python", "TensorFlow", "React", "D3.js", "PostgreSQL", "Redis", "Docker"],
+        "status": "completed",
+        "startDate": "2024-01-01",
+        "endDate": "2024-06-01",
+        "images": ["images/projects/project1-1.jpg", "images/projects/project1-2.jpg", "images/projects/project1-3.jpg"],
+        "links": {
+            "demo": "https://demo.example.com",
+            "github": "https://github.com/user/data-platform",
+            "documentation": "https://docs.example.com"
+        },
+        "category": "机器学习",
+        "tags": ["数据分析", "可视化", "机器学习", "Python", "React"],
+        "featured": true,
+        "achievements": [
+            "支持10+种机器学习算法",
+            "处理TB级数据集",
+            "获得公司创新奖"
+        ]
+    },
+    {
+        "id": "project-002",
+        "title": "分布式计算框架",
+        "description": "高性能分布式计算框架，支持大规模数据处理和实时计算。框架采用微服务架构，具有高可用性、可扩展性和容错能力，能够处理PB级数据。",
+        "technologies": ["Java", "Apache Spark", "Kafka", "Redis", "Docker", "Kubernetes", "Zookeeper"],
+        "status": "in-progress",
+        "startDate": "2024-03-01",
+        "endDate": null,
+        "images": ["images/projects/project2-1.jpg", "images/projects/project2-2.jpg"],
+        "links": {
+            "github": "https://github.com/user/distributed-computing",
+            "documentation": "https://distributed-docs.example.com"
+        },
+        "category": "分布式系统",
+        "tags": ["分布式", "大数据", "实时计算", "Java", "Spark"],
+        "featured": false,
+        "achievements": [
+            "支持1000+节点集群",
+            "毫秒级延迟处理",
+            "99.9%可用性"
+        ]
+    },
+    {
+        "id": "project-003",
+        "title": "智能推荐系统",
+        "description": "基于深度学习的个性化推荐系统，结合协同过滤和内容推荐算法，为用户提供精准的个性化推荐服务。系统支持实时推荐和离线批处理两种模式。",
+        "technologies": ["Python", "PyTorch", "FastAPI", "MongoDB", "Redis", "Elasticsearch"],
+        "status": "completed",
+        "startDate": "2023-09-01",
+        "endDate": "2024-02-01",
+        "images": ["images/projects/project3-1.jpg", "images/projects/project3-2.jpg"],
+        "links": {
+            "demo": "https://recommend.example.com",
+            "github": "https://github.com/user/recommendation-system",
+            "paper": "https://arxiv.org/abs/example"
+        },
+        "category": "机器学习",
+        "tags": ["推荐系统", "深度学习", "个性化", "Python"],
+        "featured": true,
+        "achievements": [
+            "提升点击率30%",
+            "支持千万级用户",
+            "发表顶级会议论文"
+        ]
+    },
+    {
+        "id": "project-004",
+        "title": "区块链投票系统",
+        "description": "基于以太坊的去中心化投票系统，确保投票过程的透明性、安全性和不可篡改性。系统支持多种投票模式和实时结果统计。",
+        "technologies": ["Solidity", "Web3.js", "React", "Node.js", "IPFS", "MetaMask"],
+        "status": "completed",
+        "startDate": "2023-11-01",
+        "endDate": "2024-01-15",
+        "images": ["images/projects/project4-1.jpg"],
+        "links": {
+            "demo": "https://vote.example.com",
+            "github": "https://github.com/user/blockchain-voting"
+        },
+        "category": "区块链",
+        "tags": ["区块链", "智能合约", "去中心化", "投票"],
+        "featured": false,
+        "achievements": [
+            "零篡改记录",
+            "支持万人同时投票",
+            "获得区块链创新奖"
+        ]
+    },
+    {
+        "id": "project-005",
+        "title": "实时聊天应用",
+        "description": "基于WebSocket的实时聊天应用，支持文字、图片、文件传输，具有群聊、私聊、消息加密等功能。采用微服务架构，支持水平扩展。",
+        "technologies": ["Node.js", "Socket.io", "React", "MongoDB", "Redis", "JWT"],
+        "status": "in-progress",
+        "startDate": "2024-02-01",
+        "endDate": "2024-08-01",
+        "images": ["images/projects/project5-1.jpg", "images/projects/project5-2.jpg"],
+        "links": {
+            "demo": "https://chat.example.com",
+            "github": "https://github.com/user/realtime-chat"
+        },
+        "category": "Web应用",
+        "tags": ["实时通信", "WebSocket", "聊天", "Node.js"],
+        "featured": false,
+        "achievements": [
+            "支持万人在线",
+            "消息端到端加密",
+            "跨平台支持"
+        ]
+    },
+    {
+        "id": "project-006",
+        "title": "AI图像识别API",
+        "description": "基于深度学习的图像识别API服务，支持物体检测、人脸识别、文字识别等多种功能。提供RESTful API接口，支持批量处理和实时识别。",
+        "technologies": ["Python", "TensorFlow", "OpenCV", "FastAPI", "Docker", "AWS"],
+        "status": "completed",
+        "startDate": "2023-08-01",
+        "endDate": "2023-12-01",
+        "images": ["images/projects/project6-1.jpg"],
+        "links": {
+            "api": "https://api.vision.example.com",
+            "github": "https://github.com/user/ai-vision-api",
+            "documentation": "https://vision-docs.example.com"
+        },
+        "category": "人工智能",
+        "tags": ["图像识别", "深度学习", "API", "计算机视觉"],
+        "featured": true,
+        "achievements": [
+            "识别准确率95%+",
+            "日处理百万张图片",
+            "获得AI创新奖"
+        ]
+    }
+]

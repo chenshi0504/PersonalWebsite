@@ -1,0 +1,39 @@
+{
+    "site": {
+        "title": "个人网站",
+        "description": "科研项目、知识共享、生活兴趣",
+        "author": "网站作者",
+        "keywords": ["个人网站", "科研", "技术", "生活"],
+        "language": "zh-CN",
+        "version": "1.0.0"
+    },
+    "features": {
+        "enableComments": false,
+        "enableSearch": true,
+        "enableAnalytics": false,
+        "enablePWA": true,
+        "enableDarkMode": true
+    },
+    "pagination": {
+        "projectsPerPage": 9,
+        "articlesPerPage": 10,
+        "interestsPerPage": 12
+    },
+    "social": {
+        "github": "",
+        "email": "",
+        "linkedin": "",
+        "twitter": ""
+    },
+    "seo": {
+        "enableSitemap": true,
+        "enableRobots": true,
+        "enableStructuredData": true
+    },
+    "performance": {
+        "enableLazyLoading": true,
+        "enableImageOptimization": true,
+        "enableCaching": true,
+        "cacheTimeout": 300000
+    }
+}

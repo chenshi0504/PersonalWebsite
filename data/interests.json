@@ -1,0 +1,107 @@
+[
+    {
+        "id": "interest-001",
+        "category": "摄影",
+        "title": "城市夜景摄影作品",
+        "description": "记录城市夜晚的美丽瞬间，展现都市的繁华与宁静。",
+        "content": "这次夜景摄影之旅让我深深感受到了城市的另一面美丽。当夜幕降临，华灯初上，整个城市仿佛披上了一层神秘的面纱。外滩的灯火辉煌，黄浦江上倒影斑斓，每一个瞬间都值得用镜头记录下来。",
+        "date": "2024-01-10",
+        "image": "images/interests/night-photography.jpg",
+        "images": ["images/interests/photo1.jpg", "images/interests/photo2.jpg", "images/interests/photo3.jpg"],
+        "location": "上海外滩",
+        "type": "gallery",
+        "tags": ["摄影", "夜景", "城市", "艺术"],
+        "gallery": [
+            {
+                "url": "images/interests/photo1.jpg",
+                "caption": "外滩夜景全景"
+            },
+            {
+                "url": "images/interests/photo2.jpg", 
+                "caption": "黄浦江倒影"
+            },
+            {
+                "url": "images/interests/photo3.jpg",
+                "caption": "城市灯火"
+            }
+        ]
+    },
+    {
+        "id": "interest-002",
+        "category": "旅行",
+        "title": "西藏之行",
+        "description": "一次难忘的西藏旅行，感受高原的壮美和文化的魅力。",
+        "content": "这次西藏之行是我人生中最难忘的经历之一。从拉萨的布达拉宫到纳木错的圣湖，每一处风景都让人震撼。高原的蓝天白云，虔诚的朝圣者，还有那份内心的宁静，都深深地印在了我的心里。",
+        "date": "2024-02-15",
+        "image": "images/interests/tibet-travel.jpg",
+        "images": ["images/interests/tibet1.jpg", "images/interests/tibet2.jpg"],
+        "location": "西藏拉萨",
+        "type": "travel",
+        "tags": ["旅行", "西藏", "文化", "风景"],
+        "gallery": [
+            {
+                "url": "images/interests/tibet1.jpg",
+                "caption": "布达拉宫"
+            },
+            {
+                "url": "images/interests/tibet2.jpg",
+                "caption": "纳木错圣湖"
+            }
+        ]
+    },
+    {
+        "id": "interest-003",
+        "category": "阅读",
+        "title": "《人工智能简史》读后感",
+        "description": "分享对人工智能发展历程的思考和感悟。",
+        "content": "这本书详细梳理了人工智能从诞生到现在的发展历程，让我对AI的发展有了更深入的理解。从图灵测试到深度学习，从专家系统到神经网络，每一个里程碑都标志着人类智慧的进步。作为一名技术工作者，我深感责任重大。",
+        "date": "2024-03-01",
+        "image": "images/interests/ai-book.jpg",
+        "images": [],
+        "location": "",
+        "type": "note",
+        "tags": ["阅读", "人工智能", "技术", "思考"]
+    },
+    {
+        "id": "interest-004",
+        "category": "美食",
+        "title": "家乡小吃探索",
+        "description": "回到家乡，重新发现那些熟悉的味道和美食文化。",
+        "content": "每次回到家乡，最让我怀念的就是那些街头巷尾的小吃。从早餐的豆浆油条，到夜宵的烧烤摊，每一种味道都承载着童年的记忆。这次特意走访了几家老店，品尝了正宗的家乡味道。",
+        "date": "2024-03-20",
+        "image": "images/interests/hometown-food.jpg",
+        "images": ["images/interests/food1.jpg", "images/interests/food2.jpg"],
+        "location": "家乡",
+        "type": "hobby",
+        "tags": ["美食", "家乡", "文化", "回忆"],
+        "gallery": [
+            {
+                "url": "images/interests/food1.jpg",
+                "caption": "传统早餐"
+            },
+            {
+                "url": "images/interests/food2.jpg",
+                "caption": "街头小吃"
+            }
+        ]
+    },
+    {
+        "id": "interest-005",
+        "category": "运动",
+        "title": "晨跑日记",
+        "description": "坚持晨跑的这些日子，记录运动带来的身心变化。",
+        "content": "开始晨跑已经三个月了，从最初的气喘吁吁到现在的轻松自如，这个过程让我体会到了坚持的力量。每天清晨的第一缕阳光，公园里清新的空气，还有跑步时内心的平静，都成为了我生活中不可缺少的一部分。",
+        "date": "2024-04-05",
+        "image": "images/interests/morning-run.jpg",
+        "images": ["images/interests/run1.jpg"],
+        "location": "城市公园",
+        "type": "hobby",
+        "tags": ["运动", "健康", "坚持", "生活"],
+        "gallery": [
+            {
+                "url": "images/interests/run1.jpg",
+                "caption": "晨跑路线"
+            }
+        ]
+    }
+]
