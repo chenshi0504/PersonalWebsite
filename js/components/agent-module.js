@@ -10,7 +10,8 @@ class AgentModule {
         this.activeSessionId = 'default';
         this.isLoading = false;
         this.isInitialized = false;
-        this.agentEndpoint = 'http://localhost:3000/api/chat'; // AgentSystem backend
+        this.agentEndpoint = 'http://localhost:3000/api/chat';
+        this.backendOnline = false;
     }
 
     get activeSession() {
@@ -20,17 +21,35 @@ class AgentModule {
     init() {
         if (this.isInitialized) return;
         this.isInitialized = true;
+        // Check backend health
+        this.checkBackend();
         document.addEventListener('langchange', () => {
             const mainContent = document.getElementById('main-content');
             if (mainContent && mainContent.querySelector('.agent-page')) this.render();
         });
     }
 
+    async checkBackend() {
+        try {
+            const res = await fetch('http://localhost:3000/api/health', { signal: AbortSignal.timeout(3000) });
+            this.backendOnline = res.ok;
+        } catch {
+            this.backendOnline = false;
+        }
+        // Update status dot if already rendered
+        const dot = document.querySelector('.agent-status');
+        if (dot) {
+            const i = k => I18N.t(k);
+            dot.className = `agent-status ${this.backendOnline ? 'online' : 'offline'}`;
+            dot.innerHTML = `<span class="status-dot"></span>${this.backendOnline ? i('agent.status.online') : i('agent.status.offline')}`;
+        }
+    }
+
     render() {
         const mainContent = document.getElementById('main-content');
         if (!mainContent) return;
         const i = k => I18N.t(k);
-        const isOnline = !!this.agentEndpoint;
+        const isOnline = this.backendOnline;
 
         mainContent.innerHTML = `
             <div class="agent-page">
