@@ -50,9 +50,9 @@ class ThemeManager {
                     tertiary: '#e9ecef',
                     
                     // 强调色
-                    accent: '#00aa66',
-                    accentHover: '#008855',
-                    accentLight: 'rgba(0, 170, 102, 0.1)',
+                    accent: '#007a47',
+                    accentHover: '#005c35',
+                    accentLight: 'rgba(0, 122, 71, 0.12)',
                     
                     // 文字颜色
                     textPrimary: '#212529',

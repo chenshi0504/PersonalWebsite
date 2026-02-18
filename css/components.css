@@ -132,18 +132,23 @@
 }
 
 .btn-accent {
-    background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
-    color: var(--color-bg-primary);
+    background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-hover) 100%);
+    color: #000;
     border-color: var(--color-accent);
     font-weight: 600;
-    box-shadow: 0 4px 12px rgba(0, 255, 136, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .btn-accent:hover {
-    background: linear-gradient(135deg, #00cc6a 0%, #00aa55 100%);
+    background: linear-gradient(135deg, var(--color-accent-hover) 0%, var(--color-primary-dark, #005c35) 100%);
     border-color: var(--color-accent-hover);
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 255, 136, 0.4);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* 亮色主题下 accent 按钮文字用白色更清晰 */
+.theme-light .btn-accent {
+    color: #fff;
 }
 
 .btn-outline {

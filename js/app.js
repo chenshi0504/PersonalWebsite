@@ -98,9 +98,12 @@ class PersonalWebsite {
         this.router = new Router({
             '/': () => this.renderHomePage(),
             '/agent': () => this.renderAgentPage(),
+            '/agent/about': () => this.renderModuleAbout('agent'),
             '/research': () => this.renderResearchPage(),
+            '/research/about': () => this.renderModuleAbout('research'),
             '/research/:id': (route) => this.renderResearchPage('detail', route.params),
             '/interests': () => this.renderInterestsPage(),
+            '/interests/about': () => this.renderModuleAbout('interests'),
             '/interests/timeline': () => this.renderInterestsPage('timeline'),
             '/interests/category/:category': (route) => this.renderInterestsPage('category', route.params),
             '/interests/:id': (route) => this.renderInterestsPage('detail', route.params),
@@ -201,16 +204,8 @@ class PersonalWebsite {
                             <div class="module-icon">🤖</div>
                             <h3>${i('home.agent.title')}</h3>
                             <p class="module-desc">${i('home.agent.desc')}</p>
-                            <div class="module-detail">
-                                <p>${i('home.agent.detail')}</p>
-                                <ul class="module-features">
-                                    <li>${i('home.agent.f1')}</li>
-                                    <li>${i('home.agent.f2')}</li>
-                                    <li>${i('home.agent.f3')}</li>
-                                </ul>
-                            </div>
                             <div class="module-actions">
-                                <button class="btn btn-ghost btn-sm module-expand-btn">${i('home.learnMore')}</button>
+                                <a href="#/agent/about" class="btn btn-ghost btn-sm">${i('home.learnMore')}</a>
                                 <a href="#/agent" class="btn btn-accent btn-sm">${i('home.enter')}</a>
                             </div>
                         </div>
@@ -219,16 +214,8 @@ class PersonalWebsite {
                             <div class="module-icon">🔬</div>
                             <h3>${i('home.research.title')}</h3>
                             <p class="module-desc">${i('home.research.desc')}</p>
-                            <div class="module-detail">
-                                <p>${i('home.research.detail')}</p>
-                                <ul class="module-features">
-                                    <li>${i('home.research.f1')}</li>
-                                    <li>${i('home.research.f2')}</li>
-                                    <li>${i('home.research.f3')}</li>
-                                </ul>
-                            </div>
                             <div class="module-actions">
-                                <button class="btn btn-ghost btn-sm module-expand-btn">${i('home.learnMore')}</button>
+                                <a href="#/research/about" class="btn btn-ghost btn-sm">${i('home.learnMore')}</a>
                                 <a href="#/research" class="btn btn-accent btn-sm">${i('home.enter')}</a>
                             </div>
                         </div>
@@ -237,16 +224,8 @@ class PersonalWebsite {
                             <div class="module-icon">🎨</div>
                             <h3>${i('home.interests.title')}</h3>
                             <p class="module-desc">${i('home.interests.desc')}</p>
-                            <div class="module-detail">
-                                <p>${i('home.interests.detail')}</p>
-                                <ul class="module-features">
-                                    <li>${i('home.interests.f1')}</li>
-                                    <li>${i('home.interests.f2')}</li>
-                                    <li>${i('home.interests.f3')}</li>
-                                </ul>
-                            </div>
                             <div class="module-actions">
-                                <button class="btn btn-ghost btn-sm module-expand-btn">${i('home.learnMore')}</button>
+                                <a href="#/interests/about" class="btn btn-ghost btn-sm">${i('home.learnMore')}</a>
                                 <a href="#/interests" class="btn btn-accent btn-sm">${i('home.enter')}</a>
                             </div>
                         </div>
@@ -257,17 +236,71 @@ class PersonalWebsite {
         `;
 
         this.renderContent(content);
+    }
 
-        // 绑定展开/收起按钮
-        document.querySelectorAll('.module-expand-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const card = btn.closest('.module-card');
-                const detail = card.querySelector('.module-detail');
-                const expanded = card.classList.toggle('expanded');
-                detail.style.display = expanded ? 'block' : 'none';
-                btn.textContent = expanded ? I18N.t('home.collapse') : I18N.t('home.learnMore');
-            });
-        });
+    /**
+     * 渲染模块介绍子页面
+     */
+    renderModuleAbout(module) {
+        const i = k => I18N.t(k);
+        const configs = {
+            agent: {
+                icon: '🤖', color: '#00ff88',
+                title: i('home.agent.title'),
+                desc: i('home.agent.desc'),
+                detail: i('home.agent.detail'),
+                features: [i('home.agent.f1'), i('home.agent.f2'), i('home.agent.f3')],
+                enterHref: '#/agent',
+                enterLabel: i('home.enter')
+            },
+            research: {
+                icon: '🔬', color: '#4dabf7',
+                title: i('home.research.title'),
+                desc: i('home.research.desc'),
+                detail: i('home.research.detail'),
+                features: [i('home.research.f1'), i('home.research.f2'), i('home.research.f3')],
+                enterHref: '#/research',
+                enterLabel: i('home.enter')
+            },
+            interests: {
+                icon: '🎨', color: '#f783ac',
+                title: i('home.interests.title'),
+                desc: i('home.interests.desc'),
+                detail: i('home.interests.detail'),
+                features: [i('home.interests.f1'), i('home.interests.f2'), i('home.interests.f3')],
+                enterHref: '#/interests',
+                enterLabel: i('home.enter')
+            }
+        };
+        const c = configs[module];
+        if (!c) { this.router.navigate('/', true); return; }
+
+        const content = `
+            <div class="module-about-page">
+                <div class="container">
+                    <a href="#/" class="back-link">← ${I18N.currentLang === 'zh' ? '返回首页' : 'Back to Home'}</a>
+                    <div class="module-about-hero">
+                        <div class="module-about-icon">${c.icon}</div>
+                        <h1>${c.title}</h1>
+                        <p class="module-about-desc">${c.desc}</p>
+                        <a href="${c.enterHref}" class="btn btn-accent">${c.enterLabel}</a>
+                    </div>
+                    <div class="module-about-body">
+                        <div class="module-about-detail">
+                            <h2>${I18N.currentLang === 'zh' ? '关于此模块' : 'About This Module'}</h2>
+                            <p>${c.detail}</p>
+                        </div>
+                        <div class="module-about-features">
+                            <h2>${I18N.currentLang === 'zh' ? '主要功能' : 'Key Features'}</h2>
+                            <div class="feature-grid">
+                                ${c.features.map(f => `<div class="feature-item">${f}</div>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        this.renderContent(content);
     }
 
     /**
