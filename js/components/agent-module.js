@@ -93,7 +93,6 @@ class AgentModule {
                 { key: 'claude-opus', label: zh ? 'Claude Opus — 深度推理' : 'Claude Opus — Deep Reasoning' },
                 { key: 'deepseek-v3', label: zh ? 'DeepSeek-V3 — 综合最强' : 'DeepSeek-V3 — Best Overall' },
                 { key: 'deepseek-r1', label: zh ? 'DeepSeek-R1 — 深度推理' : 'DeepSeek-R1 — Deep Reasoning' },
-                { key: 'qwen-max', label: zh ? 'Qwen-Max — 中文科研' : 'Qwen-Max — Chinese Research' },
             ];
             models.forEach(m => { opts += `<option value="${m.key}">${m.label}</option>`; });
         }
@@ -439,10 +438,6 @@ class AgentModule {
             input.addEventListener('keydown', e => {
                 if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.sendMessage(); }
             });
-            input.addEventListener('input', () => {
-                input.style.height = 'auto';
-                input.style.height = Math.min(input.scrollHeight, 120) + 'px';
-            });
         }
 
         document.getElementById('agent-sessions')?.addEventListener('click', e => {
@@ -484,7 +479,6 @@ class AgentModule {
         if (!text) return;
 
         input.value = '';
-        input.style.height = 'auto';
 
         const session = this.activeSession;
         if (session.messages.length === 0) {
