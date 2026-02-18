@@ -1,54 +1,49 @@
 @echo off
+chcp 65001 >nul
 echo ========================================
-echo   个人网站平台 - 本地服务器启动
+echo   Personal Website - Local Server
 echo ========================================
 echo.
 
-REM 检查Python是否安装
+set PORT=8000
+set URL=http://localhost:%PORT%
+
+REM 检查Python
 python --version >nul 2>&1
 if %errorlevel% == 0 (
-    echo [√] 检测到Python，正在启动服务器...
+    echo [√] Python detected, starting server...
     echo.
-    echo 服务器地址: http://localhost:8000
-    echo 按 Ctrl+C 停止服务器
+    echo Server: %URL%
+    echo Press Ctrl+C to stop
     echo.
-    python -m http.server 8000
+    start "" "%URL%"
+    python -m http.server %PORT%
     goto :end
 )
 
-REM 检查Node.js是否安装
+REM 检查Node.js
 node --version >nul 2>&1
 if %errorlevel% == 0 (
-    echo [√] 检测到Node.js，正在启动服务器...
-    echo.
-    
-    REM 检查http-server是否安装
+    echo [√] Node.js detected, starting server...
     where http-server >nul 2>&1
-    if %errorlevel% == 0 (
-        echo 服务器地址: http://localhost:8000
-        echo 按 Ctrl+C 停止服务器
-        echo.
-        http-server -p 8000
-    ) else (
-        echo [!] 正在安装http-server...
+    if not %errorlevel% == 0 (
+        echo [!] Installing http-server...
         npm install -g http-server
-        echo.
-        echo 服务器地址: http://localhost:8000
-        echo 按 Ctrl+C 停止服务器
-        echo.
-        http-server -p 8000
     )
+    echo.
+    echo Server: %URL%
+    echo Press Ctrl+C to stop
+    echo.
+    start "" "%URL%"
+    http-server -p %PORT% -c-1
     goto :end
 )
 
-REM 如果都没有安装
-echo [×] 错误: 未检测到Python或Node.js
-echo.
-echo 请先安装以下任一工具:
-echo   - Python 3.x: https://www.python.org/downloads/
-echo   - Node.js: https://nodejs.org/
+echo [x] Error: Python or Node.js not found.
+echo Please install one of:
+echo   Python 3.x : https://www.python.org/downloads/
+echo   Node.js    : https://nodejs.org/
 echo.
 pause
-goto :end
 
 :end

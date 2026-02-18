@@ -300,12 +300,10 @@ class ThemeManager {
             this.toggleTheme();
         });
 
-        // 添加到导航栏
-        const navMenu = document.querySelector('.nav-menu');
-        if (navMenu) {
-            const themeToggleItem = document.createElement('li');
-            themeToggleItem.appendChild(themeToggle);
-            navMenu.appendChild(themeToggleItem);
+        // 添加到导航栏 actions 区域
+        const navActions = document.querySelector('.nav-actions');
+        if (navActions) {
+            navActions.insertBefore(themeToggle, navActions.firstChild);
         }
 
         // 更新图标

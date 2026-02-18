@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Shi Chen chenshi.edu@gmail.com - Research Projects, Knowledge Sharing, Personal Interests">
-    <title>陈实 chenshi.edu@gmail.com</title>
+    <title>Shi Chen | Personal Website</title>
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/variables.css">
     <link rel="stylesheet" href="css/components.css">
@@ -29,16 +29,21 @@
         <nav id="main-nav" class="main-nav">
             <div class="nav-container">
                 <div class="nav-brand">
-                    <h1>陈实 chenshi.edu@gmail.com</h1>
+                    <h1 data-i18n="site.title">陈实</h1>
                 </div>
                 <ul class="nav-menu">
-                    <li><a href="#/" class="nav-link active">Home</a></li>
-                    <li><a href="#/research" class="nav-link">Research</a></li>
-                    <li><a href="#/knowledge" class="nav-link">Blog</a></li>
-                    <li><a href="#/interests" class="nav-link">Gallery</a></li>
-                    <li><a href="#/admin" class="nav-link">Admin</a></li>
-                    <!-- Theme toggle button will be added here dynamically -->
+                    <li><a href="#/" class="nav-link active" data-i18n="nav.home">Home</a></li>
+                    <li><a href="#/agent" class="nav-link" data-i18n="nav.agent">Personal Agent</a></li>
+                    <li><a href="#/research" class="nav-link" data-i18n="nav.research">Research</a></li>
+                    <li><a href="#/interests" class="nav-link" data-i18n="nav.interests">Gallery</a></li>
+                    <li><a href="#/admin" class="nav-link" data-i18n="nav.admin">Admin</a></li>
                 </ul>
+                <div class="nav-actions">
+                    <button id="lang-toggle" class="lang-toggle" aria-label="Switch language">
+                        <span id="lang-label">中文</span>
+                    </button>
+                    <!-- Theme toggle button will be added here dynamically -->
+                </div>
                 <div class="nav-toggle">
                     <span></span>
                     <span></span>
@@ -62,7 +67,7 @@
 
         <footer class="main-footer">
             <div class="container">
-                <p>&copy; 2024 陈实 chenshi.edu@gmail.com. All rights reserved.</p>
+                <p data-i18n="footer.copyright">&copy; 2024 Shi Chen. All rights reserved.</p>
             </div>
         </footer>
     </div>
@@ -77,14 +82,15 @@
 
     <script src="js/utils.js"></script>
     <script src="js/data-utils.js"></script>
+    <script src="js/i18n.js"></script>
     <script src="js/router.js"></script>
     <script src="js/theme-manager.js"></script>
     <script src="js/navigation.js"></script>
     <script src="js/notification-manager.js"></script>
     <script src="js/file-manager.js"></script>
     <script src="js/data-manager.js"></script>
+    <script src="js/components/agent-module.js"></script>
     <script src="js/components/research-module.js"></script>
-    <script src="js/components/knowledge-module.js"></script>
     <script src="js/components/interests-module.js"></script>
     <script src="js/components/admin-module.js"></script>
     <script src="js/app.js"></script>

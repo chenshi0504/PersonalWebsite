@@ -38,6 +38,16 @@ class PersonalWebsite {
             // 初始化导航
             this.navigationManager.init();
 
+            // 初始化 i18n
+            I18N.init();
+
+            // 监听语言切换，重新渲染当前页面
+            document.addEventListener('langchange', () => {
+                I18N.applyTranslations();
+                const path = this.router.currentPath || '/';
+                if (path === '/') this.renderHomePage();
+            });
+
             // 初始化文件管理器
             this.fileManager.init();
 
@@ -87,10 +97,9 @@ class PersonalWebsite {
     initializeRouter() {
         this.router = new Router({
             '/': () => this.renderHomePage(),
+            '/agent': () => this.renderAgentPage(),
             '/research': () => this.renderResearchPage(),
             '/research/:id': (route) => this.renderResearchPage('detail', route.params),
-            '/knowledge': () => this.renderKnowledgePage(),
-            '/knowledge/:id': (route) => this.renderKnowledgePage('detail', route.params),
             '/interests': () => this.renderInterestsPage(),
             '/interests/timeline': () => this.renderInterestsPage('timeline'),
             '/interests/category/:category': (route) => this.renderInterestsPage('category', route.params),
@@ -166,16 +175,17 @@ class PersonalWebsite {
      * 渲染首页
      */
     renderHomePage() {
+        const i = (key) => I18N.t(key);
         const content = `
             <div class="hero-section">
                 <div class="container">
                     <div class="hero-content">
                         <h1 class="hero-title">Welcome to My Personal Website</h1>
-                        <p class="hero-subtitle">Research · Blog · Gallery</p>
+                        <p class="hero-subtitle">${i('home.subtitle')}</p>
                         <div class="hero-actions">
-                            <a href="images/SHI+CHEN-CV.pdf" target="_blank" class="btn btn-accent">CV</a>
-                            <a href="#/research" class="btn btn-outline">View Projects</a>
-                            <a href="#/knowledge" class="btn btn-outline">Read Articles</a>
+                            <a href="images/SHI+CHEN-CV.pdf" target="_blank" class="btn btn-accent">${i('home.cv')}</a>
+                            <a href="#/research" class="btn btn-outline">${i('home.viewProjects')}</a>
+                            <a href="#/interests" class="btn btn-outline">${i('home.viewGallery')}</a>
                         </div>
                     </div>
                 </div>
@@ -184,25 +194,25 @@ class PersonalWebsite {
             <div class="modules-preview">
                 <div class="container">
                     <div class="modules-grid">
-                        <div class="module-card" data-module="research">
-                            <div class="module-icon">🔬</div>
-                            <h3>Research Projects</h3>
-                            <p>Explore my research work and technical achievements</p>
-                            <a href="#/research" class="module-link">Learn More →</a>
+                        <div class="module-card" data-module="agent">
+                            <div class="module-icon">🤖</div>
+                            <h3>${i('home.agent.title')}</h3>
+                            <p>${i('home.agent.desc')}</p>
+                            <a href="#/agent" class="module-link">${i('home.agent.link')}</a>
                         </div>
                         
-                        <div class="module-card" data-module="knowledge">
-                            <div class="module-icon">📚</div>
-                            <h3>Blog</h3>
-                            <p>Share technical articles and insights</p>
-                            <a href="#/knowledge" class="module-link">Learn More →</a>
+                        <div class="module-card" data-module="research">
+                            <div class="module-icon">🔬</div>
+                            <h3>${i('home.research.title')}</h3>
+                            <p>${i('home.research.desc')}</p>
+                            <a href="#/research" class="module-link">${i('home.research.link')}</a>
                         </div>
                         
                         <div class="module-card" data-module="interests">
                             <div class="module-icon">🎨</div>
-                            <h3>Gallery</h3>
-                            <p>Document life moments and personal hobbies</p>
-                            <a href="#/interests" class="module-link">Learn More →</a>
+                            <h3>${i('home.interests.title')}</h3>
+                            <p>${i('home.interests.desc')}</p>
+                            <a href="#/interests" class="module-link">${i('home.interests.link')}</a>
                         </div>
                     </div>
                 </div>
@@ -210,6 +220,22 @@ class PersonalWebsite {
         `;
 
         this.renderContent(content);
+    }
+
+    /**
+     * 渲染 Personal Agent 页面
+     */
+    async renderAgentPage() {
+        this.showContentLoading();
+        await Utils.delay(100);
+
+        this.renderWithErrorBoundary(() => {
+            if (!this.currentModule || this.currentModule.constructor.name !== 'AgentModule') {
+                this.currentModule = new AgentModule(this.dataManager, this.notificationManager);
+                this.currentModule.init();
+            }
+            this.currentModule.render();
+        }, 'Agent page failed to load');
     }
 
     /**
@@ -229,19 +255,10 @@ class PersonalWebsite {
     }
 
     /**
-     * 渲染知识共享页面
+     * 渲染知识共享页面（已移除，保留空方法以防旧链接）
      */
     async renderKnowledgePage(view = 'list', params = {}) {
-        this.showContentLoading();
-        await Utils.delay(100);
-        
-        this.renderWithErrorBoundary(() => {
-            if (!this.currentModule || this.currentModule.constructor.name !== 'KnowledgeModule') {
-                this.currentModule = new KnowledgeModule(this.dataManager, this.notificationManager);
-                this.currentModule.init();
-            }
-            this.currentModule.render(view, params);
-        }, '知识共享页面加载失败');
+        this.router.navigate('/', true);
     }
 
     /**

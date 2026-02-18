@@ -7,8 +7,8 @@ class NavigationManager {
         this.currentPath = '/';
         this.breadcrumbConfig = {
             '/': { title: '首页', icon: '🏠' },
+            '/agent': { title: 'Personal Agent', icon: '🤖' },
             '/research': { title: '科研项目', icon: '🔬' },
-            '/knowledge': { title: '知识共享', icon: '📚' },
             '/interests': { title: '生活兴趣', icon: '🎨' },
             '/admin': { title: '管理后台', icon: '⚙️' }
         };
