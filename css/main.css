@@ -1431,59 +1431,74 @@
 .module-about-hero h1 {
     font-size: var(--font-size-4xl);
     color: var(--color-text-primary);
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+}
+
+.module-about-tagline {
+    font-size: var(--font-size-lg);
+    color: var(--color-accent);
+    margin-bottom: var(--spacing-lg);
+    font-style: italic;
 }
 
 .module-about-desc {
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-base);
     color: var(--color-text-secondary);
-    max-width: 600px;
+    max-width: 680px;
     margin: 0 auto var(--spacing-xl);
-    line-height: 1.7;
+    line-height: 1.8;
 }
 
-.module-about-body {
+.btn-lg {
+    padding: var(--spacing-md) var(--spacing-2xl);
+    font-size: var(--font-size-lg);
+}
+
+/* 四格内容区 */
+.about-sections {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-2xl);
+    gap: var(--spacing-lg);
 }
 
-.module-about-detail,
-.module-about-features {
+.about-section-card {
     background: var(--color-bg-card);
     border: 1px solid var(--color-border);
     border-radius: var(--border-radius-lg);
     padding: var(--spacing-xl);
-}
-
-.module-about-detail h2,
-.module-about-features h2 {
-    font-size: var(--font-size-xl);
-    color: var(--color-accent);
-    margin-bottom: var(--spacing-md);
-}
-
-.module-about-detail p {
-    color: var(--color-text-secondary);
-    line-height: 1.8;
-}
-
-.feature-grid {
     display: flex;
-    flex-direction: column;
-    gap: var(--spacing-sm);
+    gap: var(--spacing-lg);
+    align-items: flex-start;
+    transition: border-color var(--transition-normal), transform var(--transition-normal);
 }
 
-.feature-item {
-    padding: var(--spacing-md);
-    background: var(--color-bg-secondary);
-    border-radius: var(--border-radius-md);
+.about-section-card:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-3px);
+}
+
+.about-section-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+    width: 48px;
+    text-align: center;
+}
+
+.about-section-body h3 {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-sm);
+    font-weight: var(--font-weight-semibold);
+}
+
+.about-section-body p {
     color: var(--color-text-secondary);
-    font-size: var(--font-size-base);
-    border-left: 3px solid var(--color-accent);
+    line-height: 1.75;
+    font-size: var(--font-size-sm);
 }
 
 @media (max-width: 768px) {
-    .module-about-body { grid-template-columns: 1fr; }
+    .about-sections { grid-template-columns: 1fr; }
     .module-about-hero h1 { font-size: var(--font-size-3xl); }
+    .about-section-card { flex-direction: column; gap: var(--spacing-sm); }
 }

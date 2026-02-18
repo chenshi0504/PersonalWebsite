@@ -242,60 +242,148 @@ class PersonalWebsite {
      * 渲染模块介绍子页面
      */
     renderModuleAbout(module) {
-        const i = k => I18N.t(k);
-        const configs = {
+        const zh = I18N.currentLang === 'zh';
+        const back = zh ? '← 返回首页' : '← Back to Home';
+        const enterLabel = zh ? '进入 →' : 'Enter →';
+
+        const pages = {
             agent: {
-                icon: '🤖', color: '#00ff88',
-                title: i('home.agent.title'),
-                desc: i('home.agent.desc'),
-                detail: i('home.agent.detail'),
-                features: [i('home.agent.f1'), i('home.agent.f2'), i('home.agent.f3')],
-                enterHref: '#/agent',
-                enterLabel: i('home.enter')
+                icon: '🤖',
+                title: zh ? '个人助理' : 'Personal Agent',
+                tagline: zh
+                    ? '你的 AI 科研伙伴，随时待命'
+                    : 'Your AI research partner, always ready',
+                desc: zh
+                    ? '基于 OpenClaw 智能体框架构建的个人科研助理，专为陈实的研究工作流设计。它不只是一个聊天机器人——它会逐渐理解你的研究方向、思维习惯和偏好，成为真正懂你的助手。'
+                    : 'A personal research assistant built on the OpenClaw agent framework, designed specifically for Shi Chen\'s research workflow. More than a chatbot — it gradually learns your research focus, thinking style, and preferences.',
+                sections: [
+                    {
+                        icon: '🎯', title: zh ? '设计理念' : 'Design Philosophy',
+                        content: zh
+                            ? '以用户为中心的渐进式学习。每一次对话都是一次了解你的机会。助理会记住你的研究兴趣、常用术语、偏好的回答风格，随着时间推移提供越来越个性化的支持。'
+                            : 'User-centered progressive learning. Every conversation is an opportunity to understand you better. The assistant remembers your research interests, terminology, and preferred response style.'
+                    },
+                    {
+                        icon: '🔬', title: zh ? '科研全流程支持' : 'Full Research Pipeline',
+                        content: zh
+                            ? '从选题到发表：文献检索与综述 → 研究问题提炼 → 实验设计建议 → 数据分析指导 → 论文写作辅助 → 投稿策略建议。覆盖科研的每一个关键节点。'
+                            : 'From ideation to publication: literature search → research question refinement → experiment design → data analysis → paper writing → submission strategy. Covering every key milestone.'
+                    },
+                    {
+                        icon: '⚡', title: zh ? '技术架构' : 'Technical Architecture',
+                        content: zh
+                            ? '基于 OpenClaw 框架，支持 OpenAI GPT-4、Anthropic Claude 和本地 Ollama 模型。后端运行在 AgentSystem/backend，通过 REST API 与前端通信，支持多会话管理和上下文保持。'
+                            : 'Built on OpenClaw framework, supporting OpenAI GPT-4, Anthropic Claude, and local Ollama models. Backend runs on AgentSystem/backend, communicating via REST API with multi-session management.'
+                    },
+                    {
+                        icon: '🌱', title: zh ? '持续进化' : 'Continuous Evolution',
+                        content: zh
+                            ? '这个助理会随着你的使用不断成长。计划中的功能包括：论文数据库集成、个人知识库构建、研究进度追踪、自动生成周报等。'
+                            : 'This assistant grows with your usage. Planned features include: paper database integration, personal knowledge base, research progress tracking, and automated weekly reports.'
+                    }
+                ],
+                enterHref: '#/agent'
             },
             research: {
-                icon: '🔬', color: '#4dabf7',
-                title: i('home.research.title'),
-                desc: i('home.research.desc'),
-                detail: i('home.research.detail'),
-                features: [i('home.research.f1'), i('home.research.f2'), i('home.research.f3')],
-                enterHref: '#/research',
-                enterLabel: i('home.enter')
+                icon: '🔬',
+                title: zh ? '科研项目' : 'Research Projects',
+                tagline: zh ? '记录每一个探索的足迹' : 'Documenting every step of exploration',
+                desc: zh
+                    ? '这里汇集了陈实的科研项目与学术成果。从 AI 智能体系统到应用研究，每个项目都代表着对某个问题的深入探索。不只是展示结果，更是记录思考过程。'
+                    : 'A collection of Shi Chen\'s research projects and academic achievements. From AI agent systems to applied research, each project represents a deep exploration of a problem.',
+                sections: [
+                    {
+                        icon: '🧪', title: zh ? '研究方向' : 'Research Areas',
+                        content: zh
+                            ? '主要研究方向包括：AI 智能体系统与框架设计、大语言模型应用、个人生产力工具、人机交互。当前重点项目：OpenClaw 智能体框架 & AgentSystem 个人助理系统。'
+                            : 'Main research areas: AI agent systems and framework design, LLM applications, personal productivity tools, human-computer interaction. Current focus: OpenClaw agent framework & AgentSystem personal assistant.'
+                    },
+                    {
+                        icon: '📑', title: zh ? '成果展示' : 'Outputs',
+                        content: zh
+                            ? '项目页面展示每个研究的背景、方法、结果和代码仓库链接。支持按状态筛选（进行中/已完成）、按标签分类，以及全文搜索。'
+                            : 'Each project page shows background, methodology, results, and code repository links. Filter by status (ongoing/completed), tags, and full-text search.'
+                    },
+                    {
+                        icon: '🔗', title: zh ? '开放协作' : 'Open Collaboration',
+                        content: zh
+                            ? '所有项目代码均托管在 GitHub。欢迎学术交流与合作，可通过 chenshi.edu@gmail.com 联系。'
+                            : 'All project code is hosted on GitHub. Academic exchange and collaboration welcome — contact via chenshi.edu@gmail.com.'
+                    },
+                    {
+                        icon: '📊', title: zh ? '数据与方法' : 'Data & Methods',
+                        content: zh
+                            ? '每个项目详情页包含：研究问题、数据集说明、实验设置、关键结果、局限性分析和未来工作方向。力求透明、可复现。'
+                            : 'Each project detail page includes: research question, dataset description, experimental setup, key results, limitations, and future directions. Aiming for transparency and reproducibility.'
+                    }
+                ],
+                enterHref: '#/research'
             },
             interests: {
-                icon: '🎨', color: '#f783ac',
-                title: i('home.interests.title'),
-                desc: i('home.interests.desc'),
-                detail: i('home.interests.detail'),
-                features: [i('home.interests.f1'), i('home.interests.f2'), i('home.interests.f3')],
-                enterHref: '#/interests',
-                enterLabel: i('home.enter')
+                icon: '🎨',
+                title: zh ? '生活画廊' : 'Gallery',
+                tagline: zh ? '科研之外，生活本身也是一场探索' : 'Beyond research, life itself is an exploration',
+                desc: zh
+                    ? '这里是陈实的个人生活空间。记录旅行、摄影、音乐和日常点滴。科研需要专注，但生活需要广度。这个模块是对"完整的人"的记录。'
+                    : 'A personal space for Shi Chen\'s life outside research. Travel, photography, music, and daily moments. Research requires focus, but life requires breadth.',
+                sections: [
+                    {
+                        icon: '📷', title: zh ? '摄影与旅行' : 'Photography & Travel',
+                        content: zh
+                            ? '用镜头记录走过的地方。香港的霓虹、山间的云雾、城市的街角——每一张照片都是一个瞬间的定格。旅行不只是移动，更是换一个视角看世界。'
+                            : 'Capturing places through the lens. The neon of Hong Kong, mountain mist, city corners — each photo freezes a moment. Travel is not just movement, but seeing the world from a different angle.'
+                    },
+                    {
+                        icon: '🎵', title: zh ? '音乐与文化' : 'Music & Culture',
+                        content: zh
+                            ? '音乐是另一种语言。从古典到现代，从东方到西方。记录听过的音乐、看过的展览、读过的书——这些构成了思维的底色。'
+                            : 'Music is another language. From classical to modern, East to West. Recording music heard, exhibitions visited, books read — these form the backdrop of thought.'
+                    },
+                    {
+                        icon: '🌱', title: zh ? '日常记录' : 'Daily Life',
+                        content: zh
+                            ? '生活的质感在细节里。咖啡馆的一个下午、实验室的深夜、朋友间的对话——这些碎片拼成了真实的生活。'
+                            : 'The texture of life is in the details. An afternoon in a café, late nights in the lab, conversations with friends — these fragments compose real life.'
+                    },
+                    {
+                        icon: '💭', title: zh ? '思考与感悟' : 'Reflections',
+                        content: zh
+                            ? '偶尔记录一些思考：关于科研的意义、关于技术与人文的关系、关于如何在快节奏中保持内心的平静。'
+                            : 'Occasional reflections: on the meaning of research, the relationship between technology and humanities, and how to maintain inner calm in a fast-paced world.'
+                    }
+                ],
+                enterHref: '#/interests'
             }
         };
-        const c = configs[module];
-        if (!c) { this.router.navigate('/', true); return; }
+
+        const p = pages[module];
+        if (!p) { this.router.navigate('/', true); return; }
+
+        const sectionsHtml = p.sections.map(s => `
+            <div class="about-section-card">
+                <div class="about-section-icon">${s.icon}</div>
+                <div class="about-section-body">
+                    <h3>${s.title}</h3>
+                    <p>${s.content}</p>
+                </div>
+            </div>
+        `).join('');
 
         const content = `
             <div class="module-about-page">
                 <div class="container">
-                    <a href="#/" class="back-link">← ${I18N.currentLang === 'zh' ? '返回首页' : 'Back to Home'}</a>
+                    <a href="#/" class="back-link">${back}</a>
+
                     <div class="module-about-hero">
-                        <div class="module-about-icon">${c.icon}</div>
-                        <h1>${c.title}</h1>
-                        <p class="module-about-desc">${c.desc}</p>
-                        <a href="${c.enterHref}" class="btn btn-accent">${c.enterLabel}</a>
+                        <div class="module-about-icon">${p.icon}</div>
+                        <h1>${p.title}</h1>
+                        <p class="module-about-tagline">${p.tagline}</p>
+                        <p class="module-about-desc">${p.desc}</p>
+                        <a href="${p.enterHref}" class="btn btn-accent btn-lg">${enterLabel}</a>
                     </div>
-                    <div class="module-about-body">
-                        <div class="module-about-detail">
-                            <h2>${I18N.currentLang === 'zh' ? '关于此模块' : 'About This Module'}</h2>
-                            <p>${c.detail}</p>
-                        </div>
-                        <div class="module-about-features">
-                            <h2>${I18N.currentLang === 'zh' ? '主要功能' : 'Key Features'}</h2>
-                            <div class="feature-grid">
-                                ${c.features.map(f => `<div class="feature-item">${f}</div>`).join('')}
-                            </div>
-                        </div>
+
+                    <div class="about-sections">
+                        ${sectionsHtml}
                     </div>
                 </div>
             </div>

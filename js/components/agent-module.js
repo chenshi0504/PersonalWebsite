@@ -10,7 +10,7 @@ class AgentModule {
         this.activeSessionId = 'default';
         this.isLoading = false;
         this.isInitialized = false;
-        this.agentEndpoint = null; // 后端接入后配置此 URL
+        this.agentEndpoint = 'http://localhost:3000/api/chat'; // AgentSystem backend
     }
 
     get activeSession() {
