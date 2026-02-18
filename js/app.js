@@ -328,12 +328,20 @@ class PersonalWebsite {
     }
 
     /**
-     * 渲染管理页面
+     * 渲染管理页面（需要密码）
      */
     async renderAdminPage(tab = 'articles') {
+        // 密码验证
+        const ADMIN_KEY = 'admin_authed';
+        const authed = sessionStorage.getItem(ADMIN_KEY);
+        if (!authed) {
+            this.renderAdminLogin();
+            return;
+        }
+
         this.showContentLoading();
         await Utils.delay(100);
-        
+
         this.renderWithErrorBoundary(() => {
             if (!this.currentModule || this.currentModule.constructor.name !== 'AdminModule') {
                 this.currentModule = new AdminModule(this.dataManager, this.notificationManager);
@@ -341,6 +349,46 @@ class PersonalWebsite {
             }
             this.currentModule.render(tab);
         }, '管理页面加载失败');
+    }
+
+    /**
+     * 渲染 Admin 登录页
+     */
+    renderAdminLogin() {
+        const content = `
+            <div class="admin-login-page">
+                <div class="admin-login-box">
+                    <div class="admin-login-icon">🔐</div>
+                    <h2>Admin Access</h2>
+                    <p>Enter password to continue</p>
+                    <div class="admin-login-form">
+                        <input type="password" id="admin-pwd" class="admin-pwd-input" placeholder="Password" autocomplete="current-password" />
+                        <button class="btn btn-accent" id="admin-login-btn">Enter</button>
+                    </div>
+                    <p class="admin-login-error hidden" id="admin-login-error">Incorrect password</p>
+                </div>
+            </div>
+        `;
+        this.renderContent(content);
+
+        const input = document.getElementById('admin-pwd');
+        const btn = document.getElementById('admin-login-btn');
+        const errEl = document.getElementById('admin-login-error');
+
+        const tryLogin = () => {
+            if (input.value === '6578u6') {
+                sessionStorage.setItem('admin_authed', '1');
+                this.renderAdminPage();
+            } else {
+                errEl.classList.remove('hidden');
+                input.value = '';
+                input.focus();
+            }
+        };
+
+        btn.addEventListener('click', tryLogin);
+        input.addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+        input.focus();
     }
 
     /**

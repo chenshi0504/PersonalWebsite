@@ -115,10 +115,30 @@ class AgentModule {
     }
 
     renderWelcome() {
+        const zh = I18N.currentLang === 'zh';
         return `
             <div class="chat-welcome">
                 <div class="welcome-icon">🤖</div>
-                <p>${I18N.t('agent.welcome')}</p>
+                <div class="welcome-text">
+                    <p class="welcome-greeting">${zh
+                        ? '你好，我是你的<strong>个人科研助理</strong>。'
+                        : "Hi, I'm your <strong>Personal Research Assistant</strong>."}</p>
+                    <p>${zh
+                        ? '我基于 <strong>OpenClaw</strong> 智能体框架构建，专为陈实的科研与生活工作流设计。'
+                        : "Built on the <strong>OpenClaw</strong> agent framework, designed specifically for Shi Chen's research workflow."}</p>
+                    <div class="welcome-about">
+                        <div class="about-item">🎯 <strong>${zh ? '设计理念' : 'Design Philosophy'}</strong>：${zh
+                            ? '以你为中心，逐渐理解你的研究方向、思维习惯和偏好，成为真正懂你的助手。'
+                            : 'You-centered. I gradually learn your research focus and thinking style to become an assistant that truly understands you.'}</div>
+                        <div class="about-item">🔬 <strong>${zh ? '科研支持' : 'Research Support'}</strong>：${zh
+                            ? '文献综述、论文解读、实验设计、数据分析——覆盖科研全流程。'
+                            : 'Literature review, paper analysis, experiment design, data analysis — covering the full research pipeline.'}</div>
+                        <div class="about-item">🌱 <strong>${zh ? '持续成长' : 'Continuous Growth'}</strong>：${zh
+                            ? '随着对话积累，我会越来越了解你的需求和风格。'
+                            : 'As our conversations accumulate, I\'ll better understand your needs and style.'}</div>
+                    </div>
+                    <p class="welcome-hint">${zh ? '今天想从哪里开始？' : 'Where would you like to start today?'}</p>
+                </div>
             </div>
         `;
     }

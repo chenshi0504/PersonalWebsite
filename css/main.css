@@ -35,11 +35,12 @@
     white-space: nowrap;
 }
 
-.brand-en {
-    font-size: var(--font-size-sm);
+.brand-sub {
+    font-size: var(--font-size-xs);
     font-weight: var(--font-weight-normal);
-    opacity: 0.7;
-    margin-left: 4px;
+    opacity: 0.65;
+    margin-left: 6px;
+    letter-spacing: 0.01em;
 }
 
 .nav-menu {
@@ -1293,4 +1294,109 @@
     }
 
     .msg-bubble { max-width: 85vw; }
+}
+
+/* ===== Admin 登录页 ===== */
+.admin-login-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 140px);
+    padding: var(--spacing-xl);
+}
+
+.admin-login-box {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-xl);
+    padding: var(--spacing-3xl) var(--spacing-2xl);
+    text-align: center;
+    width: 100%;
+    max-width: 380px;
+}
+
+.admin-login-icon { font-size: 2.5rem; margin-bottom: var(--spacing-md); }
+
+.admin-login-box h2 {
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-xs);
+    font-size: var(--font-size-2xl);
+}
+
+.admin-login-box > p {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--spacing-xl);
+}
+
+.admin-login-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.admin-pwd-input {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    color: var(--color-text-primary);
+    padding: var(--spacing-md);
+    font-size: var(--font-size-base);
+    text-align: center;
+    letter-spacing: 0.2em;
+    transition: border-color var(--transition-fast);
+}
+
+.admin-pwd-input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+}
+
+.admin-login-error {
+    color: var(--color-error);
+    font-size: var(--font-size-sm);
+    margin-top: var(--spacing-sm);
+}
+
+/* ===== Agent Welcome 详情样式 ===== */
+.welcome-text {
+    max-width: 560px;
+    text-align: left;
+}
+
+.welcome-greeting {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.welcome-text > p {
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+    margin-bottom: var(--spacing-md);
+}
+
+.welcome-about {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    margin: var(--spacing-lg) 0;
+    padding: var(--spacing-md);
+    background: var(--color-bg-secondary);
+    border-radius: var(--border-radius-md);
+    border-left: 3px solid var(--color-accent);
+}
+
+.about-item {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+}
+
+.about-item strong { color: var(--color-text-primary); }
+
+.welcome-hint {
+    color: var(--color-accent);
+    font-size: var(--font-size-sm);
+    margin-top: var(--spacing-md);
 }
