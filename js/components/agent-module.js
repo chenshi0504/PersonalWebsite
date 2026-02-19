@@ -530,11 +530,48 @@ class AgentModule {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         if (data.model) this.addLog('system', `Model: ${data.model}`);
-        if (data.toolResult) {
-            this.addOutput(`Tool: ${data.toolName}`, this.renderToolCardContent(data.toolName, data.toolResult));
-            this.addLog('tool', `Tool executed: ${data.toolName}`);
+        // Show all tool calls in log and output
+        if (data.toolCallLog && data.toolCallLog.length > 0) {
+            data.toolCallLog.forEach(tc => {
+                this.addLog('tool', `Tool: ${tc.tool}`);
+                const resultStr = typeof tc.result === 'object' && tc.result !== null
+                    ? (tc.result.error ? `❌ ${tc.result.error}` : `✅ ${tc.result.success ? '成功' : JSON.stringify(tc.result).slice(0, 80)}`)
+                    : String(tc.result);
+                this.addLog('info', `  → ${resultStr}`);
+            });
+            // Show last tool result in output panel
+            if (data.toolResult) {
+                this.addOutput(`🔧 ${data.toolName}`, this.renderToolResultContent(data.toolName, data.toolResult));
+            }
         }
         return data.reply || data.message || data.content || '';
+    }
+
+    renderToolResultContent(toolName, result) {
+        if (result && result.error) return `<span style="color:#ff5555">❌ ${this.escapeHtml(result.error)}</span>`;
+        if (toolName === 'read_file') {
+            return `<div style="font-size:10px;color:var(--color-text-muted)">${this.escapeHtml(result.path)} · ${result.lines} lines</div>
+                <pre style="font-size:10px;overflow:auto;max-height:120px;margin-top:4px">${this.escapeHtml((result.content || '').slice(0, 500))}${result.content?.length > 500 ? '\n...' : ''}</pre>`;
+        }
+        if (toolName === 'write_file') {
+            return `<div style="color:var(--color-accent)">✅ 已写入: ${this.escapeHtml(result.path)}</div><div style="font-size:10px;color:var(--color-text-muted)">${result.bytes} bytes · ${result.mode}</div>`;
+        }
+        if (toolName === 'list_files') {
+            return `<div style="font-size:10px">${(result.entries || []).map(e => `${e.type === 'dir' ? '📂' : '📄'} ${e.name}`).join('<br>')}</div>`;
+        }
+        if (toolName === 'add_task_real' || toolName === 'add_task') {
+            return `<div style="color:var(--color-accent)">✅ ${this.escapeHtml(result.message || '任务已添加')}</div>`;
+        }
+        if (toolName === 'update_memory') {
+            return `<div style="color:var(--color-accent)">🧠 ${this.escapeHtml(result.message || '记忆已更新')}</div>`;
+        }
+        if (toolName === 'save_session_summary') {
+            return `<div style="color:var(--color-accent)">💾 ${this.escapeHtml(result.message || '摘要已保存')}</div>`;
+        }
+        if (toolName === 'search_files') {
+            return `<div style="font-size:10px">找到 ${result.total} 条结果：<br>${(result.results || []).slice(0, 5).map(r => `<span style="color:var(--color-accent)">${r.file}:${r.line}</span> ${this.escapeHtml(r.text)}`).join('<br>')}</div>`;
+        }
+        return `<pre style="font-size:10px;overflow:auto;max-height:100px">${this.escapeHtml(JSON.stringify(result, null, 2).slice(0, 400))}</pre>`;
     }
 
     async runQuickAction(action) {
