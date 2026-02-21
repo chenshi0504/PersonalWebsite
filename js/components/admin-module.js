@@ -52,6 +52,9 @@ class AdminModule {
                 <div class="container">
                     <div class="admin-container">
                         <div class="admin-tabs">
+                            <button class="admin-tab-btn ${tab === 'agent-outputs' ? 'active' : ''}" data-tab="agent-outputs">
+                                🤖 Agent Files
+                            </button>
                             <button class="admin-tab-btn ${tab === 'articles' ? 'active' : ''}" data-tab="articles">
                                 📚 Articles
                             </button>
@@ -80,6 +83,8 @@ class AdminModule {
      */
     renderTabContent(tab) {
         switch (tab) {
+            case 'agent-outputs':
+                return this.renderAgentOutputsTab();
             case 'articles':
                 return this.renderArticlesTab();
             case 'projects':
@@ -89,6 +94,66 @@ class AdminModule {
             default:
                 return '';
         }
+    }
+
+    /**
+     * 渲染 Agent 输出/文件 标签
+     */
+    renderAgentOutputsTab() {
+        const outputs = JSON.parse(localStorage.getItem('agent-admin-outputs') || '[]');
+        const zh = I18N.currentLang === 'zh';
+        const basePath = 'D:\\chenshi\\Personal-Agent\\PersonalWebsite';
+
+        // Also fetch real files from backend
+        return `
+            <div class="admin-tab-content">
+                <div class="admin-header">
+                    <h2>${zh ? 'Agent 生成的文件与输出' : 'Agent Files & Outputs'}</h2>
+                    <div style="display:flex;gap:8px">
+                        <button class="btn btn-primary" id="admin-refresh-files">🔄 ${zh ? '刷新文件列表' : 'Refresh Files'}</button>
+                        <button class="btn btn-secondary" id="admin-clear-outputs">🗑 ${zh ? '清空保存记录' : 'Clear Saved'}</button>
+                    </div>
+                </div>
+
+                <div class="admin-section">
+                    <h3 style="font-size:14px;color:var(--color-text-secondary);margin-bottom:8px">📂 ${zh ? '工作区文件路径' : 'Workspace File Paths'}</h3>
+                    <div class="admin-file-paths" style="background:var(--color-bg-card);border:1px solid var(--color-border);border-radius:8px;padding:12px;font-family:Consolas,Monaco,monospace;font-size:12px;color:var(--color-text-muted);margin-bottom:16px">
+                        <div style="margin-bottom:4px">📁 <span style="color:var(--color-accent)">${basePath}\\data\\</span> — ${zh ? '数据文件' : 'Data files'}</div>
+                        <div style="margin-bottom:4px">📁 <span style="color:var(--color-accent)">${basePath}\\js\\</span> — ${zh ? '脚本文件' : 'Scripts'}</div>
+                        <div style="margin-bottom:4px">📁 <span style="color:var(--color-accent)">${basePath}\\css\\</span> — ${zh ? '样式文件' : 'Styles'}</div>
+                        <div style="margin-bottom:4px">📁 <span style="color:var(--color-accent)">D:\\chenshi\\Personal-Agent\\AgentSystem\\backend\\data\\</span> — ${zh ? 'Agent 记忆/任务' : 'Agent memory/tasks'}</div>
+                        <div>📁 <span style="color:var(--color-accent)">D:\\chenshi\\Personal-Agent\\AgentSystem\\docs\\</span> — ${zh ? '文档' : 'Docs'}</div>
+                    </div>
+                </div>
+
+                <div class="admin-section">
+                    <h3 style="font-size:14px;color:var(--color-text-secondary);margin-bottom:8px">📋 ${zh ? '最近文件操作' : 'Recent File Operations'}</h3>
+                    <div id="admin-file-list" style="margin-bottom:16px">
+                        <div style="color:var(--color-text-muted);font-size:12px;font-style:italic;padding:8px">${zh ? '点击"刷新文件列表"加载...' : 'Click "Refresh Files" to load...'}</div>
+                    </div>
+                </div>
+
+                <div class="admin-section">
+                    <h3 style="font-size:14px;color:var(--color-text-secondary);margin-bottom:8px">💾 ${zh ? '保存的 Agent 输出' : 'Saved Agent Outputs'} (${outputs.length})</h3>
+                    <div class="admin-list">
+                        ${outputs.length > 0 ? outputs.map((o, idx) => `
+                            <div class="admin-item">
+                                <div class="item-info">
+                                    <h4>${this.escapeHtml(o.title)}</h4>
+                                    <div class="item-content-preview" style="font-size:12px;color:var(--color-text-muted);max-height:60px;overflow:hidden;margin:4px 0">${o.content || ''}</div>
+                                    <div class="item-meta">
+                                        <span class="date">${o.savedAt ? new Date(o.savedAt).toLocaleString('zh-CN') : o.ts || ''}</span>
+                                    </div>
+                                </div>
+                                <div class="item-actions">
+                                    <button class="btn btn-small delete-output-btn" data-idx="${idx}">🗑</button>
+                                </div>
+                            </div>
+                        `).join('') : `<p class="empty-message">${zh ? '暂无保存的输出' : 'No saved outputs yet'}</p>`}
+                    </div>
+                </div>
+            </div>
+        `;
     }
 
     /**
@@ -211,6 +276,26 @@ class AdminModule {
             btn.addEventListener('click', (e) => {
                 const tab = e.target.dataset.tab;
                 this.render(tab);
+            });
+        });
+
+        // Agent outputs: refresh files
+        document.getElementById('admin-refresh-files')?.addEventListener('click', () => this.loadAgentFiles());
+
+        // Agent outputs: clear saved
+        document.getElementById('admin-clear-outputs')?.addEventListener('click', () => {
+            localStorage.removeItem('agent-admin-outputs');
+            this.render('agent-outputs');
+        });
+
+        // Agent outputs: delete single
+        document.querySelectorAll('.delete-output-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const idx = parseInt(e.target.dataset.idx);
+                const outputs = JSON.parse(localStorage.getItem('agent-admin-outputs') || '[]');
+                outputs.splice(idx, 1);
+                localStorage.setItem('agent-admin-outputs', JSON.stringify(outputs));
+                this.render('agent-outputs');
             });
         });
 
@@ -538,6 +623,64 @@ class AdminModule {
             'interest': 'Item'
         };
         return names[type] || type;
+    }
+
+    /**
+     * 从后端加载 Agent 文件列表
+     */
+    async loadAgentFiles() {
+        const el = document.getElementById('admin-file-list');
+        if (!el) return;
+        const zh = I18N.currentLang === 'zh';
+        el.innerHTML = `<div style="color:var(--color-text-muted);font-size:12px;padding:8px">${zh ? '加载中...' : 'Loading...'}</div>`;
+
+        try {
+            // Use the agent chat endpoint to ask for file listing
+            const dirs = ['PersonalWebsite/data', 'AgentSystem/backend/data', 'AgentSystem/docs'];
+            const results = [];
+            for (const dir of dirs) {
+                try {
+                    const res = await fetch('http://localhost:3000/api/chat', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message: `<tool_call>{"tool":"list_files","args":{"path":"${dir}"}}</tool_call>`, history: [] })
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data.toolCallLog) {
+                            data.toolCallLog.forEach(tc => {
+                                if (tc.result && tc.result.entries) {
+                                    tc.result.entries.forEach(e => {
+                                        results.push({ dir, name: e.name, type: e.type, size: e.size });
+                                    });
+                                }
+                            });
+                        }
+                    }
+                } catch { /* skip */ }
+            }
+
+            if (results.length === 0) {
+                el.innerHTML = `<div style="color:var(--color-text-muted);font-size:12px;font-style:italic;padding:8px">${zh ? '未找到文件或后端未运行' : 'No files found or backend offline'}</div>`;
+                return;
+            }
+
+            el.innerHTML = results.map(f => {
+                const icon = f.type === 'dir' ? '📂' : '📄';
+                const sizeStr = f.size ? ` (${(f.size / 1024).toFixed(1)} KB)` : '';
+                return `<div style="display:flex;align-items:center;gap:6px;padding:4px 8px;font-size:12px;border-bottom:1px solid var(--color-border)">
+                    <span>${icon}</span>
+                    <span style="color:var(--color-accent);font-family:Consolas,monospace">${f.dir}/${f.name}</span>
+                    <span style="color:var(--color-text-muted);margin-left:auto">${sizeStr}</span>
+                </div>`;
+            }).join('');
+        } catch (e) {
+            el.innerHTML = `<div style="color:#ff5555;font-size:12px;padding:8px">Error: ${e.message}</div>`;
+        }
+    }
+
+    escapeHtml(text) {
+        return String(text || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
     /**

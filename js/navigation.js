@@ -179,8 +179,7 @@ class NavigationManager {
     updateNavigation(path) {
         this.currentPath = path;
         this.updateActiveNavLink(path);
-        this.updateBreadcrumb(path);
-        this.closeMobileMenu(); // 路由变化时关闭移动端菜单
+        this.closeMobileMenu();
     }
 
     /**

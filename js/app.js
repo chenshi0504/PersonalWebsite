@@ -112,9 +112,12 @@ class PersonalWebsite {
 
         // 设置路由变化回调
         this.router.onRouteChange = (path) => {
-            // 非 agent 页面移除全屏 class
+            // 非 agent 页面移除全屏 class，恢复 footer 和滚动
             if (path !== '/agent') {
                 document.getElementById('main-content')?.classList.remove('agent-fullscreen');
+                const footer = document.querySelector('.main-footer');
+                if (footer) footer.style.display = '';
+                document.body.classList.remove('no-scroll');
             }
             this.scrollToTop();
         };
@@ -405,6 +408,14 @@ class PersonalWebsite {
             }
             // agent 页面全屏，移除 padding
             document.getElementById('main-content').classList.add('agent-fullscreen');
+            // 隐藏面包屑，workstation 自带标题
+            const bcNav = document.getElementById('breadcrumb-nav');
+            if (bcNav) bcNav.classList.add('hidden');
+            document.getElementById('main-content').classList.remove('with-breadcrumb');
+            // 隐藏 footer，禁止页面滚动
+            const footer = document.querySelector('.main-footer');
+            if (footer) footer.style.display = 'none';
+            document.body.classList.add('no-scroll');
             this.currentModule.render();
         }, 'Agent page failed to load');
     }
